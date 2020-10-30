@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "730795328034",
+    "firebase_url": "https://growlah-bcb3f.firebaseio.com",
+    "project_id": "growlah-bcb3f",
+    "storage_bucket": "growlah-bcb3f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:730795328034:android:1265da18a526ef7e7d007b",
+        "android_client_info": {
+          "package_name": "com.growLah.grow_local_eat_local"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "730795328034-1m1t0da9bhb6il7eg0vu40rq0eqlpuvp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyABJtg0etoUqKGK5V4p1PavDyJCvELesW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "730795328034-1m1t0da9bhb6il7eg0vu40rq0eqlpuvp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

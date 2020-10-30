@@ -1,0 +1,168 @@
+name: grow_lah
+description: A new Flutter application.
+
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.2.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # The following adds the Cupertino Icons font to your application.
+  # Use with the CupertinoIcons class for iOS style icons.
+  cupertino_icons: ^0.1.2
+  fluttertoast: ^7.0.4
+  flutter_neumorphic: any
+  arcore_flutter_plugin: ^0.0.8
+  firebase_auth: ^0.18.1+2
+  firebase_core: ^0.5.0+1
+  firebase_analytics: ^6.0.2
+  firebase_storage: ^5.0.0-dev.3
+  cloud_firestore: ^0.14.1+3
+  firebase_ml_vision: ^0.9.7
+  video_player:
+  chewie:
+  cached_network_image:
+  path_provider:
+  image_picker:
+  camera:
+  intl: ^0.16.1
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
+flutter:
+
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - images/phone_image.jpeg
+    - images/communicate.jpg
+    - images/video.jpg
+    - images/sell.png
+    - images/temp.png
+    - images/donate_hand.png
+    - images/refer.png
+    - images/logout.png
+    - images/settings.png
+    - images/subscribe.jpg
+    - images/profile.png
+    - images/language.jpg
+    - images/vertical_bed.jpeg
+    - images/flat_bed.jpeg
+    - images/video_new.png
+    - images/film.png
+    - images/dot.jpg
+    - images/circle.png
+    - images/sample1.jpeg
+    - images/sample2.jpeg
+    - images/sample3.jpeg
+    - images/sample4.jpeg
+    - images/sample5.jpeg
+    - images/sample6.jpeg
+    - images/sample7.jpeg
+    - images/sample8.jpeg
+    - images/options.jpeg
+    - images/share.jpeg
+    - images/favBlack.png
+    - images/favRed.jpg
+    - images/comment.png
+    - images/backKey.png
+    - images/backButton.jpg
+    - images/favNewRed.png
+    - images/big_cart.png
+    - images/capture_btn.png
+    - images/cart.png
+    - images/chat_bot.png
+    - images/cloud_btn.png
+    - images/coin_green.png
+    - images/coin_white.png
+    - images/donate_icon.png
+    - images/gift_box.png
+    - images/growlah_icon.png
+    - images/half_circle.png
+    - images/light_btn.png
+    - images/logout_icon.png
+    - images/news_feed.png
+    - images/notification.png
+    - images/profile_icon.png
+    - images/scan_spot.png
+    - images/send.png
+    - images/settings_icon.png
+    - images/smile.png
+    - images/stack.png
+    - images/stock_green.png
+    - images/subscription.png
+    - images/temp_btn.png
+    - images/temp_icon.png
+    - images/top.png
+    - images/video.png
+    - images/cloud.png
+    - images/nav.png
+    - images/yello_circle.png
+    - images/share.png
+    - images/profile.jpeg
+    - images/checked_icon.png
+    - images/filter.png
+    - images/focus.jpeg
+    - images/bg.jpeg
+    - images/chat.png
+    - images/app_logo.png
+    - images/bottom_logo.png
+    - images/scan_icon.png
+    - images/gPay.png
+    - images/comm1.jpeg
+    - images/comm2.jpeg
+    - images/comm3.png
+    - images/comm4.jpeg
+    - images/comm5.jpeg
+    - images/comm6.png
+    - images/big_appIcon.png
+    - images/add.png
+    - assets/FlowersModel/dict.txt
+    - assets/FlowersModel/manifest.json
+    - assets/FlowersModel/model.tflite
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware.
+
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/RobotoRegular.ttf
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700
+  #
+  # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages

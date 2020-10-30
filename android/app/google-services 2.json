@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "486532719064",
+    "firebase_url": "https://grow-lah.firebaseio.com",
+    "project_id": "grow-lah",
+    "storage_bucket": "grow-lah.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486532719064:android:cbfa2dc7800acd484ed2ad",
+        "android_client_info": {
+          "package_name": "com.growLah.grow_local_eat_local"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486532719064-2t4kiqommhc958n58uonp28ts3h4bvm0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDxV6TkO96Cq4TGxI1yTUkrYBaSN3YSTg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486532719064-2t4kiqommhc958n58uonp28ts3h4bvm0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
