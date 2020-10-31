@@ -1,5 +1,5 @@
 {
   "modelFile": "model.tflite",
-  "labelsFile": "dict.txt",
+  "labelsFile": "labels_Grow_Lah_Flowers.txt",
   "modelType": "IMAGE_LABELING"
 }

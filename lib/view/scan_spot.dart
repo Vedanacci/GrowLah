@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:tflite/tflite.dart';
+import 'package:flutter/services.dart' show rootBundle;
 //import 'package:firebase_ml_vision/firebase_ml_vision.dart' as ml;
 //import 'package:firebase_livestream_ml_vision/firebase_livestream_ml_vision.dart' as livestream;
-import 'package:flutter/services.dart' show rootBundle;
-import 'package:path_provider/path_provider.dart';
+import 'package:firebase_ml_custom/firebase_ml_custom.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 class ScanAndSpot extends StatefulWidget {
   ScanAndSpot({Key key, this.imagePath}) : super(key: key);
@@ -27,87 +31,182 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
   String _modelLoadStatus = 'unknown';
   File _imageFile;
   String _inferenceResult;
+  Image newImage;
+
   @override
   void initState() {
+    if (Firebase.app() == null) {
+      print("no firebase app");
+      Firebase.initializeApp();
+    }
     widget.image = Image.file(
       File(widget.imagePath),
       fit: BoxFit.cover,
     );
     _imageFile = File(widget.imagePath);
-    //loadModel().then((value) => loadImageAndInfer());
-    //detectPlant(File(widget.imagePath));
     super.initState();
   }
-
-  // Future<void> loadModel() async {
-  //   String dataset = "FlowersModel";
-  //   await createLocalFiles(dataset);
-  //   String modelLoadStatus;
-  //   try {
-  //     await AutomlMlkit.loadModelFromCache(dataset: dataset);
-  //     modelLoadStatus = "AutoML model successfully loaded";
-  //   } on Exception catch (e) {
-  //     modelLoadStatus = "Error loading model";
-  //     print("error from platform on calling loadModelFromCache");
-  //     print(e.toString());
-  //   }
-
-  //   // If the widget was removed from the tree while the asynchronous platform
-  //   // message was in flight, we want to discard the reply rather than calling
-  //   // setState to update our non-existent appearance.
-  //   if (!mounted) return;
-
-  //   setState(() {
-  //     _modelLoadStatus = modelLoadStatus;
-  //   });
-  // }
-
-  // Future<void> createLocalFiles(String folder) async {
-  //   Directory tempDir = await getTemporaryDirectory();
-  //   final Directory modelDir = Directory("${tempDir.path}/$folder");
-  //   if (!modelDir.existsSync()) {
-  //     modelDir.createSync();
-  //   }
-  //   final filenames = ["manifest.json", "model.tflite", "dict.txt"];
-
-  //   for (String filename in filenames) {
-  //     final File file = File("${modelDir.path}/$filename");
-  //     if (!file.existsSync()) {
-  //       print("Copying file: $filename");
-  //       await copyFileFromAssets(filename, file);
-  //     }
-  //   }
-  // }
-
-  // /// copies file from assets to dst file
-  // Future<void> copyFileFromAssets(String filename, File dstFile) async {
-  //   ByteData data = await rootBundle.load("assets/$filename");
-  //   final buffer = data.buffer;
-  //   dstFile.writeAsBytesSync(
-  //       buffer.asUint8List(data.offsetInBytes, data.lengthInBytes));
-  // }
-
-  // Future<void> loadImageAndInfer() async {
-  //   final File imageFile = _imageFile;
-  //   final results =
-  //       await AutomlMlkit.runModelOnImage(imagePath: imageFile.path);
-  //   print("Got results" + results[0].toString());
-  //   if (results.isEmpty) {
-  //     AppConfig.showToast("No Labels found :(");
-  //   } else {
-  //     final label = results[0]["label"];
-  //     final confidence = (results[0]["confidence"] * 100).toStringAsFixed(2);
-  //     setState(() {
-  //       _imageFile = imageFile;
-  //       _inferenceResult = "$label: $confidence \%";
-  //     });
-  //   }
-  // }
 
   @override
   void dispose() {
     super.dispose();
   }
+
+  //List<Map<dynamic, dynamic>> _labels;
+  //When the model is ready, _loaded changes to trigger the screen state change.
+  //Future<String> _loaded = loadModel();
+
+  /// Triggers selection of an image and the consequent inference.
+  // Future<void> getImageLabels() async {
+  //   try {
+  //     final image = _imageFile;
+  //     print("path");
+  //     print(image.path);
+  //     var labels = List<Map>.from(await Tflite.runModelOnImage(
+  //       path: image.path,
+  //       imageStd: 127.5,
+  //     ));
+  //     setState(() {
+  //       _labels = labels;
+  //       print(_labels);
+  //     });
+  //   } catch (exception) {
+  //     print("Failed on getting your image and it's labels: $exception");
+  //     print('Continuing with the program...');
+  //     rethrow;
+  //   }
+  // }
+
+  // static Future<String> loadModel() async {
+  //   final modelFile = await loadModelFromFirebase();
+  //   return await loadTFLiteModel(modelFile);
+  // }
+
+  Uint8List imageToByteListFloat32(
+      img.Image image, int inputSize, double mean, double std) {
+    var convertedBytes = Float32List(1 * inputSize * inputSize * 3);
+    var buffer = Float32List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = (img.getRed(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getGreen(pixel) - mean) / std;
+        buffer[pixelIndex++] = (img.getBlue(pixel) - mean) / std;
+      }
+    }
+    return convertedBytes.buffer.asUint8List();
+  }
+
+  Uint8List imageToByteListUint8(img.Image image, int inputSize) {
+    var convertedBytes = Uint8List(1 * inputSize * inputSize * 3);
+    var buffer = Uint8List.view(convertedBytes.buffer);
+    int pixelIndex = 0;
+    for (var i = 0; i < inputSize; i++) {
+      for (var j = 0; j < inputSize; j++) {
+        var pixel = image.getPixel(j, i);
+        buffer[pixelIndex++] = img.getRed(pixel);
+        buffer[pixelIndex++] = img.getGreen(pixel);
+        buffer[pixelIndex++] = img.getBlue(pixel);
+      }
+    }
+    return convertedBytes.buffer.asUint8List();
+  }
+
+  Future<void> loadLocalModel() async {
+    print("loading local model");
+    String res = await Tflite.loadModel(
+        model: "assets/model.tflite",
+        labels: "assets/labels_Grow_Lah_Flowers.txt");
+    print(res);
+    print("loaded tf model");
+    var imageBytes = (await _imageFile.readAsBytes()).buffer;
+    img.Image oriImage = img.decodeImage(imageBytes.asUint8List());
+    img.Image resizedImage = img.copyResize(oriImage, width: 224, height: 224);
+
+    setState(() {
+      newImage = Image.memory(imageBytes.asUint8List());
+    });
+
+    var recognitions = await Tflite.runModelOnBinary(
+      binary: imageToByteListFloat32(resizedImage, 224, 127.5, 127.5),
+      numResults: 5,
+      threshold: 0.1,
+    );
+    print("recognitions");
+    print(recognitions);
+
+    // await Tflite.runModelOnImage(path: _imageFile.path, numResults: 3)
+    //     .then((value) {
+    //   if (value.isEmpty) {
+    //     print("value is empty");
+    //   } else {
+    //     print("value");
+    //     print(value);
+    //   }
+    // });
+  }
+
+  // static Future<File> loadModelFromFirebase() async {
+  //   try {
+  //     // Create model with a name that is specified in the Firebase console
+  //     final model = FirebaseCustomRemoteModel('Grow_Lah_Flowers');
+
+  //     // Specify conditions when the model can be downloaded.
+  //     // If there is no wifi access when the app is started,
+  //     // this app will continue loading until the conditions are satisfied.
+  //     final conditions = FirebaseModelDownloadConditions(
+  //         androidRequireWifi: true, iosAllowCellularAccess: false);
+
+  //     // Create model manager associated with default Firebase App instance.
+  //     final modelManager = FirebaseModelManager.instance;
+
+  //     // Begin downloading and wait until the model is downloaded successfully.
+  //     await modelManager.download(model, conditions).whenComplete(() {
+  //       print("successfully downloaded model");
+  //     });
+  //     assert(await modelManager.isModelDownloaded(model) == true);
+  //     print("Downloading latest model");
+  //     // Get latest model file to use it for inference by the interpreter.
+  //     var modelFile =
+  //         await modelManager.getLatestModelFile(model).catchError((error) {
+  //       print("Unable to get latest model" + error);
+  //     });
+  //     assert(modelFile != null);
+  //     print("modefile: " + modelFile.path);
+  //     return modelFile;
+  //   } catch (exception) {
+  //     print('Failed on loading your model from Firebase: $exception');
+  //     print('The program will not be resumed');
+  //     rethrow;
+  //   }
+  // }
+
+  // static Future<String> loadTFLiteModel(File modelFile) async {
+  //   try {
+  //     File localModel = File("assets/model.tflite");
+  //     final appDirectory = await getApplicationDocumentsDirectory();
+  //     final labelsData =
+  //         await rootBundle.load("assets/labels_Grow_Lah_Flowers.txt");
+  //     final labelsFile =
+  //         await File(appDirectory.path + "/_labels_Grow_Lah_Flowers.txt")
+  //             .writeAsBytes(labelsData.buffer.asUint8List(
+  //                 labelsData.offsetInBytes, labelsData.lengthInBytes));
+
+  //     assert(await Tflite.loadModel(
+  //           model: modelFile.path,
+  //           labels: labelsFile.path,
+  //           isAsset: false,
+  //         ) ==
+  //         "success");
+  //     return "Model is loaded";
+  //   } catch (exception) {
+  //     print(
+  //         'Failed on loading your model to the TFLite interpreter: $exception');
+  //     print('The program will not be resumed');
+  //     rethrow;
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +230,9 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                     child: Container(
                         height: 272.0,
                         width: 374.0,
-                        child: Image.file(_imageFile)),
+                        child: (newImage != null)
+                            ? newImage
+                            : Image.file(_imageFile)),
                   ),
                 ),
                 Padding(
@@ -171,7 +272,22 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                             ),
                           )),
                         ),
-                      )
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 40.0, right: 10.0),
+                        child: Neumorphic(
+                          style: AppConfig.neuStyle
+                              .copyWith(boxShape: AppConfig.neuShape),
+                          child: Container(
+                              child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GestureDetector(
+                              child: Text("Run Model"),
+                              onTap: loadLocalModel,
+                            ),
+                          )),
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -288,11 +404,3 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
             : '18-24 c';
   }
 }
-
-// void detectPlant(File image) async {
-//   //List<livestream.FirebaseCameraDescription> cameras = await livestream.camerasAvailable();
-//   final ml.FirebaseVisionImage visionimage =
-//       ml.FirebaseVisionImage.fromFile(image);
-//   //livestream.FirebaseVision _vision = livestream.FirebaseVision( cameras[0], livestream.ResolutionSetting.high);
-//   //final livestream.VisionEdgeImageLabeler visionEdgeLabeler = livestream.FirebaseVision(visionimage)
-// }
