@@ -100,7 +100,7 @@ packages:
     source: hosted
     version: "0.2.0+4"
   collection:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: collection
       url: "https://pub.dartlang.org"
@@ -225,13 +225,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.0"
-  firebase_ml_custom:
-    dependency: "direct main"
-    description:
-      name: firebase_ml_custom
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.0.3"
   firebase_storage:
     dependency: "direct main"
     description:
@@ -532,13 +525,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19-nullsafety.2"
-  tflite:
-    dependency: "direct main"
+  tflite_flutter:
+    dependency: transitive
     description:
-      name: tflite
+      name: tflite_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.1"
+    version: "0.5.0"
+  tflite_flutter_helper:
+    dependency: "direct main"
+    description:
+      name: tflite_flutter_helper
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.2"
   typed_data:
     dependency: transitive
     description:

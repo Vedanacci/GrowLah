@@ -1,12 +1,14 @@
-import 'dart:convert';
+import 'dart:math';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:camera/camera.dart';
+import 'package:camera/new/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:tflite/tflite.dart';
 import 'package:flutter/services.dart' show rootBundle;
-//import 'package:firebase_ml_vision/firebase_ml_vision.dart' as ml;
-//import 'package:firebase_livestream_ml_vision/firebase_livestream_ml_vision.dart' as livestream;
-import 'package:firebase_ml_custom/firebase_ml_custom.dart';
+import 'package:collection/collection.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,6 +18,7 @@ import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
+import 'package:grow_lah/model/plant_types_model.dart';
 
 class ScanAndSpot extends StatefulWidget {
   ScanAndSpot({Key key, this.imagePath}) : super(key: key);
@@ -28,10 +31,9 @@ class ScanAndSpot extends StatefulWidget {
 }
 
 class _ScanAndSpotState extends State<ScanAndSpot> {
-  String _modelLoadStatus = 'unknown';
-  File _imageFile;
-  String _inferenceResult;
   Image newImage;
+  String path;
+  PlantData extractedData;
 
   @override
   void initState() {
@@ -43,7 +45,8 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
       File(widget.imagePath),
       fit: BoxFit.cover,
     );
-    _imageFile = File(widget.imagePath);
+    path = widget.imagePath;
+    loadLocalModel();
     super.initState();
   }
 
@@ -51,36 +54,6 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
   void dispose() {
     super.dispose();
   }
-
-  //List<Map<dynamic, dynamic>> _labels;
-  //When the model is ready, _loaded changes to trigger the screen state change.
-  //Future<String> _loaded = loadModel();
-
-  /// Triggers selection of an image and the consequent inference.
-  // Future<void> getImageLabels() async {
-  //   try {
-  //     final image = _imageFile;
-  //     print("path");
-  //     print(image.path);
-  //     var labels = List<Map>.from(await Tflite.runModelOnImage(
-  //       path: image.path,
-  //       imageStd: 127.5,
-  //     ));
-  //     setState(() {
-  //       _labels = labels;
-  //       print(_labels);
-  //     });
-  //   } catch (exception) {
-  //     print("Failed on getting your image and it's labels: $exception");
-  //     print('Continuing with the program...');
-  //     rethrow;
-  //   }
-  // }
-
-  // static Future<String> loadModel() async {
-  //   final modelFile = await loadModelFromFirebase();
-  //   return await loadTFLiteModel(modelFile);
-  // }
 
   Uint8List imageToByteListFloat32(
       img.Image image, int inputSize, double mean, double std) {
@@ -113,100 +86,91 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
     return convertedBytes.buffer.asUint8List();
   }
 
-  Future<void> loadLocalModel() async {
-    print("loading local model");
-    String res = await Tflite.loadModel(
-        model: "assets/model.tflite",
-        labels: "assets/labels_Grow_Lah_Flowers.txt");
-    print(res);
-    print("loaded tf model");
-    var imageBytes = (await _imageFile.readAsBytes()).buffer;
-    img.Image oriImage = img.decodeImage(imageBytes.asUint8List());
-    img.Image resizedImage = img.copyResize(oriImage, width: 224, height: 224);
-
-    setState(() {
-      newImage = Image.memory(imageBytes.asUint8List());
-    });
-
-    var recognitions = await Tflite.runModelOnBinary(
-      binary: imageToByteListFloat32(resizedImage, 224, 127.5, 127.5),
-      numResults: 5,
-      threshold: 0.1,
-    );
-    print("recognitions");
-    print(recognitions);
-
-    // await Tflite.runModelOnImage(path: _imageFile.path, numResults: 3)
-    //     .then((value) {
-    //   if (value.isEmpty) {
-    //     print("value is empty");
-    //   } else {
-    //     print("value");
-    //     print(value);
-    //   }
-    // });
+  TensorImage _preProcess(TensorImage _inputImage, List<int> _inputShape,
+      NormalizeOp preProcessNormalizeOp) {
+    int cropSize = min(_inputImage.height, _inputImage.width);
+    return ImageProcessorBuilder()
+        .add(ResizeWithCropOrPadOp(cropSize, cropSize))
+        .add(ResizeOp(
+            _inputShape[1], _inputShape[2], ResizeMethod.NEAREST_NEIGHBOUR))
+        .add(preProcessNormalizeOp)
+        .build()
+        .process(_inputImage);
   }
 
-  // static Future<File> loadModelFromFirebase() async {
-  //   try {
-  //     // Create model with a name that is specified in the Firebase console
-  //     final model = FirebaseCustomRemoteModel('Grow_Lah_Flowers');
+  Future predictImagePicker() async {
+    // var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    // if (image == null) return;
 
-  //     // Specify conditions when the model can be downloaded.
-  //     // If there is no wifi access when the app is started,
-  //     // this app will continue loading until the conditions are satisfied.
-  //     final conditions = FirebaseModelDownloadConditions(
-  //         androidRequireWifi: true, iosAllowCellularAccess: false);
+    loadLocalModel();
+  }
 
-  //     // Create model manager associated with default Firebase App instance.
-  //     final modelManager = FirebaseModelManager.instance;
+  Future<void> loadLocalModel() async {
+    print("loading local model");
 
-  //     // Begin downloading and wait until the model is downloaded successfully.
-  //     await modelManager.download(model, conditions).whenComplete(() {
-  //       print("successfully downloaded model");
-  //     });
-  //     assert(await modelManager.isModelDownloaded(model) == true);
-  //     print("Downloading latest model");
-  //     // Get latest model file to use it for inference by the interpreter.
-  //     var modelFile =
-  //         await modelManager.getLatestModelFile(model).catchError((error) {
-  //       print("Unable to get latest model" + error);
-  //     });
-  //     assert(modelFile != null);
-  //     print("modefile: " + modelFile.path);
-  //     return modelFile;
-  //   } catch (exception) {
-  //     print('Failed on loading your model from Firebase: $exception');
-  //     print('The program will not be resumed');
-  //     rethrow;
-  //   }
-  // }
+// Create a TensorImage object from a File
+    TensorImage tensorImage = TensorImage.fromFile(File(path));
 
-  // static Future<String> loadTFLiteModel(File modelFile) async {
-  //   try {
-  //     File localModel = File("assets/model.tflite");
-  //     final appDirectory = await getApplicationDocumentsDirectory();
-  //     final labelsData =
-  //         await rootBundle.load("assets/labels_Grow_Lah_Flowers.txt");
-  //     final labelsFile =
-  //         await File(appDirectory.path + "/_labels_Grow_Lah_Flowers.txt")
-  //             .writeAsBytes(labelsData.buffer.asUint8List(
-  //                 labelsData.offsetInBytes, labelsData.lengthInBytes));
+// Create a container for the result and specify that this is a quantized model.
+// Hence, the 'DataType' is defined as UINT8 (8-bit unsigned integer)
+    TensorBuffer probabilityBuffer;
+    Interpreter interpreter;
 
-  //     assert(await Tflite.loadModel(
-  //           model: modelFile.path,
-  //           labels: labelsFile.path,
-  //           isAsset: false,
-  //         ) ==
-  //         "success");
-  //     return "Model is loaded";
-  //   } catch (exception) {
-  //     print(
-  //         'Failed on loading your model to the TFLite interpreter: $exception');
-  //     print('The program will not be resumed');
-  //     rethrow;
-  //   }
-  // }
+    try {
+      // Create interpreter from asset.
+      interpreter = await Interpreter.fromAsset("model.tflite");
+    } catch (e) {
+      print('Error loading model: ' + e.toString());
+    }
+
+    NormalizeOp postProcessNormalizeOp = NormalizeOp(0, 1);
+    List<int> outputShape = interpreter.getOutputTensor(0).shape;
+    TfLiteType outputType = interpreter.getOutputTensor(0).type;
+    List<int> _inputShape = interpreter.getInputTensor(0).shape;
+    NormalizeOp preProcessNormalizeOp = NormalizeOp(0, 1);
+
+    tensorImage = _preProcess(tensorImage, _inputShape, preProcessNormalizeOp);
+
+    probabilityBuffer = TensorBuffer.createFixedSize(outputShape, outputType);
+    TensorProcessorBuilder().add(postProcessNormalizeOp);
+    interpreter.run(tensorImage.buffer, probabilityBuffer.buffer);
+    print(interpreter);
+
+    List<String> labels =
+        await FileUtil.loadLabels("assets/labels_Grow_Lah_Flowers.txt");
+
+    var probabilityProcessor =
+        TensorProcessorBuilder().add(NormalizeOp(0, 1)).build();
+
+    Map<String, double> labeledProb = TensorLabel.fromList(
+            labels, probabilityProcessor.process(probabilityBuffer))
+        .getMapWithFloatValue();
+    final pred = getTopProbability(labeledProb);
+
+    print("helper");
+    print(pred);
+
+    setState(() async {
+      extractedData = await extractPlantData(pred.key);
+    });
+  }
+
+  MapEntry<String, double> getTopProbability(Map<String, double> labeledProb) {
+    var pq = PriorityQueue<MapEntry<String, double>>(compare);
+    pq.addAll(labeledProb.entries);
+
+    return pq.first;
+  }
+
+  int compare(MapEntry<String, double> e1, MapEntry<String, double> e2) {
+    if (e1.value > e2.value) {
+      return -1;
+    } else if (e1.value == e2.value) {
+      return 0;
+    } else {
+      return 1;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -220,7 +184,7 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
             scrollDirection: Axis.vertical,
             physics: ScrollPhysics(parent: ScrollPhysics()),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(10.0),
@@ -232,13 +196,14 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                         width: 374.0,
                         child: (newImage != null)
                             ? newImage
-                            : Image.file(_imageFile)),
+                            : Image.file(File(path))),
                   ),
                 ),
                 Padding(
                   padding:
                       const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Neumorphic(
                         style: AppConfig.neuStyle
@@ -247,7 +212,7 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                             child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'Rose',
+                            extractedData != null ? extractedData.name : 'Rose',
                             style: TextStyle(
                                 fontSize: 18.0,
                                 fontFamily: AppConfig.roboto,
@@ -264,7 +229,9 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                               child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Rosaceae family',
+                              extractedData != null
+                                  ? extractedData.family
+                                  : 'Rosaceae family',
                               style: TextStyle(
                                   fontSize: 18.0,
                                   fontFamily: AppConfig.roboto,
@@ -273,27 +240,11 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                           )),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 40.0, right: 10.0),
-                        child: Neumorphic(
-                          style: AppConfig.neuStyle
-                              .copyWith(boxShape: AppConfig.neuShape),
-                          child: Container(
-                              child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GestureDetector(
-                              child: Text("Run Model"),
-                              onTap: loadLocalModel,
-                            ),
-                          )),
-                        ),
-                      ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                      top: 20.0, bottom: 20.0, left: 10.0, right: 10.0),
+                  padding: const EdgeInsets.only(top: 20.0, bottom: 20.0),
                   child: getWeatherCards(),
                 ),
                 Padding(
@@ -303,19 +254,22 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                     style: TextStyle(
                         fontFamily: AppConfig.roboto,
                         color: Colors.green,
-                        fontSize: 16.0,
+                        fontSize: 18.0,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 10.0, top: 10.0),
+                  padding:
+                      const EdgeInsets.only(left: 20.0, top: 20.0, right: 20),
                   child: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing'
-                    'elit. Facilisis lectus at a vulputate pellentesque'
-                    'aliquet velit odio nullam. Mattis ut est ut enim.'
-                    'Nullam lobortis dolor quis non mauris, dui sed'
-                    'nunc quam. Gravida commodo vel at dignissim'
-                    'integer.',
+                    extractedData != null
+                        ? extractedData.about
+                        : 'Lorem ipsum dolor sit amet, consectetur adipiscing'
+                            'elit. Facilisis lectus at a vulputate pellentesque'
+                            'aliquet velit odio nullam. Mattis ut est ut enim.'
+                            'Nullam lobortis dolor quis non mauris, dui sed'
+                            'nunc quam. Gravida commodo vel at dignissim'
+                            'integer.',
                     style: TextStyle(
                         fontFamily: AppConfig.roboto,
                         color: Colors.green,
@@ -334,48 +288,41 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
     return Container(
       height: 150.0,
       child: Center(
-        child: ListView.builder(
-            itemCount: 3,
-            physics: NeverScrollableScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, position) {
-              return Padding(
-                padding: EdgeInsets.only(
-                    left: position == 1 ? 50.0 : 0,
-                    right: position == 1 ? 50.0 : 0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    // Neumorphic(
-                    //   style: NeumorphicStyle(color: Colors.white12),
-                    //   boxShape: NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(10.0))),
-                    //   child: Container(
-                    //     height: 80.0,
-                    //     width: 90.0,
-                    //     child:Icon(getImage(position),color: Colors.green,
-                    //     size: 30.0,) ,
-                    //   ),
-                    // ),
-                    Container(
-                        width: 90.0,
-                        height: 80.0,
-                        child: Image.asset(getImage(position))),
-                    Text(
-                      getTitle(position),
-                      style: TextStyle(color: Colors.green, fontSize: 12.0),
-                    ),
-                    Text(
-                      getPercentage(position),
-                      style: TextStyle(
-                          fontFamily: AppConfig.roboto,
-                          color: Colors.green,
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              );
-            }),
+        child: Container(
+          width: (90 * 3 + 50 * 2).toDouble(),
+          child: ListView.builder(
+              itemCount: 3,
+              physics: NeverScrollableScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, position) {
+                return Padding(
+                  padding: EdgeInsets.only(
+                      left: position == 1 ? 50.0 : 0,
+                      right: position == 1 ? 50.0 : 0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Container(
+                          width: 90.0,
+                          height: 80.0,
+                          child: Image.asset(getImage(position))),
+                      Text(
+                        getTitle(position),
+                        style: TextStyle(color: Colors.green, fontSize: 12.0),
+                      ),
+                      Text(
+                        getPercentage(position),
+                        style: TextStyle(
+                            fontFamily: AppConfig.roboto,
+                            color: Colors.green,
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                );
+              }),
+        ),
       ),
     );
   }
@@ -398,9 +345,9 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
 
   String getPercentage(int position) {
     return position == 0
-        ? '64 %'
+        ? (extractedData != null ? extractedData.humidty : '64 %')
         : position == 1
-            ? 'Diffused'
-            : '18-24 c';
+            ? (extractedData != null ? extractedData.light : 'Diffused')
+            : (extractedData != null ? extractedData.temp : '18-24 c');
   }
 }
