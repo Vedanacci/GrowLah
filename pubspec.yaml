@@ -31,14 +31,21 @@ dependencies:
   firebase_analytics: ^6.0.2
   firebase_storage: ^5.0.0-dev.3
   cloud_firestore: ^0.14.1+3
-  firebase_ml_vision: ^0.9.7
+  #firebase_ml_custom: ^0.0.3
+  #tflite: ^1.1.1
+  tflite_flutter_helper: ^0.1.1
+  # tflite_flutter: ^0.5.0
   video_player:
   chewie:
   cached_network_image:
+  collection: any
   path_provider:
   image_picker:
   camera:
   intl: ^0.16.1
+  image: ^2.1.4
+  liquid_swipe: ^1.5.0
+  carousel_slider: ^2.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -46,6 +53,8 @@ dev_dependencies:
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
+#  tflite: ^1.1.1
+#
 
 # The following section is specific to Flutter.
 flutter:
@@ -140,9 +149,13 @@ flutter:
     - images/comm6.png
     - images/big_appIcon.png
     - images/add.png
-    - assets/FlowersModel/dict.txt
-    - assets/FlowersModel/manifest.json
-    - assets/FlowersModel/model.tflite
+    - images/onboarding1.png
+    - images/onboarding2.png
+    - images/onboarding3.png
+    - assets/Grow_Lah_Flowers/dict.txt
+    - assets/manifest.json
+    - assets/model.tflite
+    - assets/labels_Grow_Lah_Flowers.txt
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
 
