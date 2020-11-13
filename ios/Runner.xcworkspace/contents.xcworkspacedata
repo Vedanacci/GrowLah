@@ -2,6 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:../unity/Hydroponics AR Project/Android and iOS Flutter Exports/ios/UnityLibrary/Unity-iPhone.xcodeproj">
+   </FileRef>
+   <FileRef
       location = "group:Runner.xcodeproj">
    </FileRef>
    <FileRef

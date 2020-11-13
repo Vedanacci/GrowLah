@@ -21,10 +21,6 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
-aaptOptions {
-    noCompress "tflite"
-}
-
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'kotlin-android'
@@ -43,6 +39,9 @@ android {
     lintOptions {
         disable 'InvalidPackage'
     }
+    aaptOptions {
+    noCompress "tflite"
+}
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).

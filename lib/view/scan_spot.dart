@@ -150,8 +150,10 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
     print("helper");
     print(pred);
 
-    setState(() async {
-      extractedData = await extractPlantData(pred.key);
+    PlantData extractedPlantData = await extractPlantData(pred.key);
+
+    setState(() {
+      extractedData = extractedPlantData;
     });
   }
 

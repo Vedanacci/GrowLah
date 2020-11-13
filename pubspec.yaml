@@ -44,6 +44,8 @@ dependencies:
   camera:
   intl: ^0.16.1
   image: ^2.1.4
+  liquid_swipe: ^1.5.0
+  carousel_slider: ^2.3.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -147,6 +149,9 @@ flutter:
     - images/comm6.png
     - images/big_appIcon.png
     - images/add.png
+    - images/onboarding1.png
+    - images/onboarding2.png
+    - images/onboarding3.png
     - assets/Grow_Lah_Flowers/dict.txt
     - assets/manifest.json
     - assets/model.tflite
