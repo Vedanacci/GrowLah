@@ -1,9 +1,13 @@
+import 'dart:async';
+import 'dart:ffi';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 class MonitorScreen extends StatefulWidget {
   MonitorScreen({Key key}) : super(key: key);
@@ -17,9 +21,12 @@ class MonitorScreen extends StatefulWidget {
 class _MonitorScreenState extends State<MonitorScreen> {
   bool isSelected = false;
   int selectedIndex = 0;
+  List<int> lightData = [79];
+  List<double> phData = [7.0];
   @override
   void initState() {
     super.initState();
+    getSensorData();
   }
 
   @override
@@ -33,39 +40,40 @@ class _MonitorScreenState extends State<MonitorScreen> {
     return Scaffold(
       appBar: AppConfig.appBar('Monitor', context, true),
       body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            alertView(),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                'Smart Farming',
-                style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.normal,
-                    fontSize: 18.0),
-              ),
+          padding: const EdgeInsets.all(20.0),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                alertView(),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text(
+                    'Smart Farming',
+                    style: TextStyle(
+                        color: Colors.green,
+                        fontWeight: FontWeight.normal,
+                        fontSize: 18.0),
+                  ),
+                ),
+                weatherCard(),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0, bottom: 10.0),
+                  child: getCards(),
+                ),
+                Padding(
+                  padding:
+                      const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
+                  child: Text(
+                    'Hi.. you’re field is in very good condition. Soil moisture '
+                    'and field analysis is ensured.Water use efficiency level'
+                    'has been optimized.',
+                    style: TextStyle(color: Colors.green, fontSize: 14.0),
+                  ),
+                )
+              ],
             ),
-            weatherCard(),
-            Padding(
-              padding: const EdgeInsets.only(top: 30.0, bottom: 10.0),
-              child: getCards(),
-            ),
-            Padding(
-              padding:
-                  const EdgeInsets.only(top: 20.0, left: 10.0, right: 10.0),
-              child: Text(
-                'Hi.. you’re field is in very good condition. Soil moisture '
-                'and field analysis is ensured.Water use efficiency level'
-                'has been optimized.',
-                style: TextStyle(color: Colors.green, fontSize: 14.0),
-              ),
-            )
-          ],
-        ),
-      ),
+          )),
     );
   }
 
@@ -309,13 +317,15 @@ class _MonitorScreenState extends State<MonitorScreen> {
       child: Center(
         child: ListView.builder(
             itemCount: 3,
+            padding: EdgeInsets.only(bottom: 10, right: 10),
+            itemExtent: 90,
             physics: NeverScrollableScrollPhysics(),
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, position) {
               return Padding(
-                padding: EdgeInsets.only(
-                    left: position == 1 ? 50.0 : 0,
-                    right: position == 1 ? 50.0 : 0),
+                padding: EdgeInsets.only(),
+                // left: position == 1 ? 50.0 : 10,
+                // right: position == 1 ? 50.0 : 10),
                 child: Neumorphic(
                   style: NeumorphicStyle(
                       color: Colors.white12,
@@ -323,7 +333,6 @@ class _MonitorScreenState extends State<MonitorScreen> {
                           BorderRadius.all(Radius.circular(10.0)))),
                   child: Container(
                     height: 80.0,
-                    width: 90.0,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: <Widget>[
@@ -355,10 +364,10 @@ class _MonitorScreenState extends State<MonitorScreen> {
         return CommonStrings.light;
         break;
       case 1:
-        return CommonStrings.humidity;
+        return "pH";
         break;
       case 2:
-        return CommonStrings.fertilizer;
+        return CommonStrings.humidity;
         break;
     }
   }
@@ -366,14 +375,54 @@ class _MonitorScreenState extends State<MonitorScreen> {
   String getPercentage(int position) {
     switch (position) {
       case 0:
-        return '79 %';
+        return (lightData == null) ? 'Error %' : lightData[0].toString() + " %";
         break;
       case 1:
-        return '60%';
+        return (phData == null) ? 'Error %' : phData[0].toString();
         break;
       case 2:
         return '87 %';
         break;
     }
+  }
+
+  Future getSensorData() async {
+    print("started");
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("vedantbahadur");
+
+    StreamSubscription<Event> subscription =
+        databaseReference.onValue.listen((event) {
+      var count = (event.snapshot.value["count"] == null)
+          ? 0
+          : event.snapshot.value["count"] - 1;
+      databaseReference
+          .child("light")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print(snapshot.value);
+        var val = snapshot.value;
+        if (mounted) {
+          setState(() {
+            lightData = [(val * 100 / 4095.0).round()];
+          });
+        }
+      });
+      databaseReference
+          .child("ph")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print(snapshot.value);
+        double val = snapshot.value;
+        if (mounted) {
+          setState(() {
+            phData = [val];
+          });
+        }
+      });
+    });
+    return subscription;
   }
 }

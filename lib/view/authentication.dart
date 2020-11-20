@@ -58,10 +58,11 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
             child: Container(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Padding(
                       padding:
-                          EdgeInsets.only(left: 20.0, bottom: 10.0, top: 150.0),
+                          EdgeInsets.only(left: 20.0, bottom: 10.0, top: 120.0),
                       child: Text(
                         (signUpClicked
                             ? CommonStrings.welcomeBack
@@ -249,7 +250,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                   Visibility(
                     visible: true,
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 50.0),
+                      padding: const EdgeInsets.only(top: 0.0),
                       child: Container(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
