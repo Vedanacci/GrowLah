@@ -16,6 +16,8 @@ import 'package:grow_lah/view/take_picture.dart';
 import 'package:grow_lah/view/video_screen.dart';
 import 'package:grow_lah/view/buy_home.dart';
 import 'commuication_detail.dart';
+import 'package:grow_lah/view/my_garden.dart';
+import 'my_orders.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -275,12 +277,12 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 1:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MonitorScreen()));
+            context, MaterialPageRoute(builder: (context) => GardenScreen()));
         ;
         break;
       case 2:
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => CommunicationSection()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => MyOrders()));
         break;
       case 3:
         Navigator.push(

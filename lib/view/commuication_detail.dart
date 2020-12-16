@@ -10,6 +10,7 @@ import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/view/feeds_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class DetailCommunication extends StatefulWidget {
   DetailCommunication({Key key}) : super(key: key);
@@ -53,6 +54,13 @@ class _DetailCommunicationState extends State<DetailCommunication> {
         shrinkWrap: true,
         itemCount: feedsList.length,
         itemBuilder: (context, index) {
+          if ((index == 0) && (feedsList.length < 5)) {
+            return Image.network(
+              "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+              height: 100,
+              color: Colors.green,
+            );
+          }
           return InkWell(
             onTap: () {
               Navigator.push(
@@ -101,20 +109,47 @@ class _DetailCommunicationState extends State<DetailCommunication> {
                                     width: 92.71,
                                     child: (images.length != 0 &&
                                             images[index] != null)
-                                        ? Image.network(
-                                            images[index],
+                                        ?
+                                        // ? FadeInImage(
+                                        //     fit: BoxFit.fill,
+                                        //     image: CachedNetworkImageProvider(
+                                        //       images[index],
+                                        //       //scale: 1,
+                                        //     ),
+                                        //     placeholder:
+                                        //         CachedNetworkImageProvider(
+                                        //       "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+                                        //     ))
+
+                                        CachedNetworkImage(
+                                            imageUrl: images[index],
                                             fit: BoxFit.fill,
+                                            placeholder: (context, url) {
+                                              return RefreshProgressIndicator(
+                                                valueColor:
+                                                    AlwaysStoppedAnimation<
+                                                        Color>(Colors.green),
+                                              );
+                                            },
                                           )
+
+                                        // ? Image.network(
+                                        //     images[index],
+                                        //     fit: BoxFit.fill,
+                                        //   )
                                         : Icon(Icons.error))),
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Padding(
+                              Container(
+                                width: SizeConfig.screenWidth - 16 - 92.71 - 48,
                                 padding: const EdgeInsets.only(
-                                    top: 32.0, bottom: 11.0),
+                                    top: 32.0, bottom: 11.0, right: 0),
                                 child: Text(
                                   feedsList[index].title,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 3,
                                   style: TextStyle(
                                       fontFamily: AppConfig.roboto,
                                       color: Colors.green),
@@ -250,6 +285,8 @@ class _DetailCommunicationState extends State<DetailCommunication> {
       images = updatedImages;
       for (var list in feedsList) {
         list.image = images[feedsList.indexOf(list)];
+        print(list.title);
+        print(list.image);
       }
     });
   }

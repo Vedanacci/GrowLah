@@ -189,7 +189,7 @@ class HorizontalProductCard extends StatelessWidget {
                             color: Colors.white,
                           ),
                         ),
-                        Text(" x 1",
+                        Text(" x " + product.quantity.toString(),
                             style: TextStyle(
                               fontSize: getProportionateScreenWidth(12),
                               fontWeight: FontWeight.w300,

@@ -21,11 +21,11 @@ class _VideosScreenState extends State<VideosScreen> {
   @override
   void initState() {
     videosList.add(
-        'https://www.youtube.com/watch?v=x1T-VTFiUwc'); //https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4
+        'https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/Videos%2FHow%20to%20build%20a%20low-tech%20hydroponics%20system%20-%20DIY%20Tutorial.mp4?alt=media&token=c80a0d00-50ea-4646-918a-6696a43cb3f3'); //https://flutter.github.io/assets-for-api-docs/assets/videos/butterfly.mp4
     videosList.add(
-        'https://www.youtube.com/watch?v=x1T-VTFiUwc'); //http://techslides.com/demos/sample-videos/small.mp4
+        'https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/Videos%2FA%20Beginners%20Guide_%20Hydroponic%20Design.mp4?alt=media&token=db4c1370-37bb-4ab4-b1ec-3a5b49d900fe'); //http://techslides.com/demos/sample-videos/small.mp4 //https://www.youtube.com/watch?v=n67F-_A5Rrw
     videosList.add(
-        "https://www.youtube.com/watch?v=x1T-VTFiUwc"); //https://www.youtube.com/watch?v=n67F-_A5Rrw
+        "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/Videos%2FHow%20to%20Start%20Your%20Seeds%20in%20a%20Hydroponics%20System.mp4?alt=media&token=900a3306-ec21-4d56-918b-a8d0343eada1");
     super.initState();
   }
 

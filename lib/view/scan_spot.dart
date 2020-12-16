@@ -278,6 +278,9 @@ class _ScanAndSpotState extends State<ScanAndSpot> {
                         fontSize: 12.0),
                   ),
                 ),
+                SizedBox(
+                  height: 30,
+                )
               ],
             ),
           ),

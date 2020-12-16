@@ -7,6 +7,7 @@ import 'package:grow_lah/utils/common_strings.dart';
 import 'app_config.dart';
 import 'assets.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class FeedsUtils {
   static getTopView(FeedsModel feedsList) {
@@ -123,8 +124,17 @@ class FeedsUtils {
               child: Container(
                 height: 150.0,
                 width: 150.0,
-                child:
-                    (image != null) ? Image.network(image) : Icons.error_sharp,
+                child: (image != null)
+                    ? FadeInImage(
+                        fit: BoxFit.fill,
+                        image: CachedNetworkImageProvider(
+                          image,
+                          //scale: 1,
+                        ),
+                        placeholder: CachedNetworkImageProvider(
+                          "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+                        ))
+                    : Icons.error_sharp,
               ),
             ),
           )

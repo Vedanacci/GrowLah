@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:grow_lah/model/system_data.dart';
 import 'package:grow_lah/view/product_card.dart';
 import 'cart.dart';
 import 'buy_home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 const kDefaultPaddin = 20.0;
 
@@ -159,9 +162,9 @@ class _ProductPageState extends State<ProductPage> {
           child: Stack(
             children: <Widget>[
               Container(
-                margin: EdgeInsets.only(top: size.height * 0.33),
+                margin: EdgeInsets.only(top: size.height * 0.275),
                 padding: EdgeInsets.only(
-                  top: size.height * 0.1,
+                  top: kDefaultPaddin * 2,
                   left: 0,
                   right: 0,
                 ),
@@ -330,7 +333,12 @@ class _ProductPageState extends State<ProductPage> {
                                       Icons.shopping_cart,
                                       color: Colors.green,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Cart()));
+                                    },
                                   ),
                                 ),
                                 Expanded(
@@ -341,7 +349,18 @@ class _ProductPageState extends State<ProductPage> {
                                           borderRadius:
                                               BorderRadius.circular(18)),
                                       color: Colors.green,
-                                      onPressed: () {
+                                      onPressed: () async {
+                                        print("Editing Cart");
+                                        print(product.name);
+                                        User user =
+                                            FirebaseAuth.instance.currentUser;
+                                        await FirebaseFirestore.instance
+                                            .collection("Users")
+                                            .doc(user.uid)
+                                            .update({
+                                          "Cart." + product.name:
+                                              FieldValue.increment(1),
+                                        });
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -383,7 +402,7 @@ class _ProductPageState extends State<ProductPage> {
                       style: Theme.of(context).textTheme.headline4.copyWith(
                           color: Colors.white, fontWeight: FontWeight.bold),
                     ),
-                    SizedBox(height: kDefaultPaddin),
+                    //SizedBox(height: kDefaultPaddin),
                     Row(
                       children: <Widget>[
                         RichText(

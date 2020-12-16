@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class SystemData {
   String name;
@@ -10,9 +12,11 @@ class SystemData {
   List<String> sensors;
   double price;
   String description;
+  int quantity;
 
   SystemData(this.name, this.image, this.pots, this.size, this.type,
-      this.sensors, this.light, this.price, this.description);
+      this.sensors, this.light, this.price, this.description,
+      {this.quantity});
 
   static String systemDescription =
       "This is a Hydroponics System. Hydroponics allow you to not only grow vertically, but increases the growth of produce. It also rather counterintuitively uses less water.";
@@ -71,5 +75,63 @@ class SystemData {
         })
         .then((value) => print("System Added"))
         .catchError((error) => print("Failed to add system: $error"));
+  }
+}
+
+class CartData {
+  static Future<List<SystemData>> getSystems() async {
+    print("In");
+    List<SystemData> systemList = [];
+    List<String> cartData;
+    User user = FirebaseAuth.instance.currentUser;
+    print(user.uid);
+    await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(user.uid)
+        .get()
+        .then((userInfo) async {
+      Map<String, dynamic> mapCartdata = userInfo.data()["Cart"];
+      print(mapCartdata);
+      var mapData = mapCartdata.keys.toList();
+      print("Map Data");
+      print(mapData);
+      cartData = List<String>.from(mapData);
+
+      for (var item in List<String>.from(mapData)) {
+        if (mapCartdata[item] == 0) {
+          cartData.remove(item);
+        }
+      }
+
+      print(cartData);
+      print("Cart Data");
+
+      for (var item in cartData) {
+        await FirebaseFirestore.instance
+            .collection("Systems")
+            .doc(item)
+            .get()
+            .then((feed) {
+          Map<String, dynamic> data = feed.data();
+          List<double> size = List<double>.from(data["size"]);
+          List<String> sensors = List<String>.from(data["sensors"]);
+          print(data);
+          SystemData systemData = SystemData(
+              data["name"],
+              data["image"],
+              data["pots"],
+              size,
+              data["type"],
+              sensors,
+              data["light"],
+              data["price"],
+              data["description"],
+              quantity: mapCartdata[item]);
+          systemList.add(systemData);
+        });
+      }
+    });
+
+    return systemList == [] ? SystemData.defaultData : systemList;
   }
 }

@@ -391,8 +391,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                 CollectionReference users = FirebaseFirestore
                                     .instance
                                     .collection('Users');
-                                users.add(usermodel(user.uid, "", email, phone)
-                                    .toJson());
+                                users.doc(user.uid).set(
+                                    usermodel(user.uid, "", email, phone)
+                                        .toJson());
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(

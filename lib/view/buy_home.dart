@@ -9,6 +9,7 @@ import 'product_card.dart';
 import 'home_screen.dart';
 import 'product_page.dart';
 import 'product_list.dart';
+import 'cart.dart';
 
 class BuyHome extends StatefulWidget {
   BuyHome({Key key}) : super(key: key);
@@ -71,6 +72,25 @@ class _BuyHomeState extends State<BuyHome> {
                   fontWeight: FontWeight.bold,
                   color: Colors.green),
             ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => Cart()));
+                        },
+                        child: Icon(
+                          Icons.shopping_cart_outlined,
+                          color: Colors.green,
+                          size: 30.0,
+                        ))
+                  ],
+                ),
+              )
+            ],
           ),
           body: SingleChildScrollView(
               child: Center(

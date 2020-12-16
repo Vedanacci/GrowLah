@@ -8,6 +8,8 @@ import 'package:grow_lah/model/system_data.dart';
 import 'buy_home.dart';
 import 'product_card.dart';
 import 'product_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Cart extends StatefulWidget {
   Cart({Key key}) : super(key: key);
@@ -24,6 +26,7 @@ class _CartState extends State<Cart> {
   @override
   void initState() {
     super.initState();
+    reloadSystems();
   }
 
   @override
@@ -32,7 +35,7 @@ class _CartState extends State<Cart> {
   }
 
   Future reloadSystems() async {
-    List<SystemData> data = await SystemData.getSystems();
+    List<SystemData> data = await CartData.getSystems();
     setState(() {
       cartData = data;
     });
@@ -71,9 +74,16 @@ class _CartState extends State<Cart> {
           ),
           key: Key(data.name),
           direction: DismissDirection.endToStart,
-          onDismissed: (direction) {
+          onDismissed: (direction) async {
             setState(() {
               cartData.remove(data);
+            });
+            User user = FirebaseAuth.instance.currentUser;
+            await FirebaseFirestore.instance
+                .collection("Users")
+                .doc(user.uid)
+                .update({
+              "Cart." + data.name: FieldValue.increment(-1),
             });
           },
           background: Container(
@@ -90,6 +100,14 @@ class _CartState extends State<Cart> {
             ),
           ));
       products.add(dismissible);
+    }
+
+    var addGreen = 0.0;
+
+    if (products.length < 4) {
+      addGreen = (SizeConfig.screenHeight -
+          getProportionateScreenWidth(425) -
+          products.length * SizeConfig.screenWidth / 4);
     }
 
     return Scaffold(
@@ -178,7 +196,10 @@ class _CartState extends State<Cart> {
                         runAlignment: WrapAlignment.end,
                       ),
                     ),
-                    SizedBox(height: getProportionateScreenWidth(174) - 20)
+                    SizedBox(height: getProportionateScreenWidth(174) - 20),
+                    SizedBox(
+                      height: addGreen,
+                    )
                   ]))),
           Center(
               child: Neumorphic(

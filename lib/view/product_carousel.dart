@@ -7,6 +7,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:grow_lah/model/system_data.dart';
 import 'product_page.dart';
+import 'home_screen.dart';
 
 class ProductCarousel extends StatefulWidget {
   ProductCarousel({Key key}) : super(key: key);
@@ -69,10 +70,16 @@ class _ProductCarouselState extends State<ProductCarousel> {
             padding: const EdgeInsets.only(left: 20.0, right: 20.0),
             child: Row(
               children: [
-                Icon(
-                  Icons.home,
-                  color: Colors.green,
-                  size: 30.0,
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()));
+                  },
+                  child: Icon(
+                    Icons.home,
+                    color: Colors.green,
+                    size: 30,
+                  ),
                 )
               ],
             ),
