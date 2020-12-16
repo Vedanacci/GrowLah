@@ -37,6 +37,8 @@ class _SettingsState extends State<Settings> {
     super.dispose();
   }
 
+  List<bool> switchList = [true, true, true];
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -77,7 +79,16 @@ class _SettingsState extends State<Settings> {
                                     fontSize: 16.0),
                               )),
                           settingsList[index].isChecked
-                              ? Image.asset(Assets.checkedIcon)
+                              ? Switch(
+                                  activeColor: Colors.green,
+                                  value: switchList[index],
+                                  onChanged: (bool newValue) {
+                                    print(newValue);
+                                    setState(() {
+                                      switchList[index] = newValue;
+                                      print(switchList);
+                                    });
+                                  })
                               : Container()
                         ],
                       ),

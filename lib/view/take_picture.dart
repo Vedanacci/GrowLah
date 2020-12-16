@@ -1,8 +1,11 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/view/scan_spot.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:grow_lah/utils/app_config.dart';
 
 class TakePicture extends StatefulWidget {
   TakePicture({Key key}) : super(key: key);
@@ -17,13 +20,13 @@ class _TakePictureState extends State<TakePicture> {
   CameraController controller;
   List cameras;
   int selectedCameraIdx;
-  String imagePath;  @override
+  String imagePath;
+  @override
   @override
   void initState() {
     super.initState();
     // 1
     availableCameras().then((availableCameras) {
-
       cameras = availableCameras;
       if (cameras.length > 0) {
         setState(() {
@@ -32,7 +35,7 @@ class _TakePictureState extends State<TakePicture> {
         });
 
         _initCameraController(cameras[selectedCameraIdx]).then((void v) {});
-      }else{
+      } else {
         print("No camera available");
       }
     }).catchError((err) {
@@ -40,7 +43,6 @@ class _TakePictureState extends State<TakePicture> {
       print('Error: $err.code\nError Message: $err.message');
     });
   }
-
 
   @override
   void dispose() {
@@ -51,21 +53,55 @@ class _TakePictureState extends State<TakePicture> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      body: Container(child: Stack(
+      body: Container(
+          child: Stack(
         children: <Widget>[
-
           CameraPreview(controller),
-          GestureDetector(
-            onTap: ()=>Navigator.pop(context),
-            child: Padding(
-              padding: const EdgeInsets.only(top:50.0,
-              left: 20.0),
-              child: Icon(Icons.arrow_back_ios,color: Colors.white,size: 20.0,),
+          Padding(
+            padding: EdgeInsets.only(top: 30, left: 20, right: 20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 20.0),
+                    child: Icon(
+                      Icons.arrow_back_ios,
+                      color: Colors.white,
+                      size: 20.0,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: uploadImage,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(10)),
+                          color: Colors.white),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: GestureDetector(
+                            child: Text(
+                              'Upload',
+                              style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontFamily: AppConfig.roboto,
+                                  color: Colors.green),
+                            ),
+                            onTap: uploadImage),
+                      )),
+                )
+              ],
             ),
           ),
-          Center(child: Image.asset(Assets.scanIcon,)),
+          Center(
+              child: Image.asset(
+            Assets.scanIcon,
+          )),
           Padding(
-            padding: const EdgeInsets.only(bottom:50.0),
+            padding: const EdgeInsets.only(bottom: 50.0),
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Material(
@@ -77,7 +113,7 @@ class _TakePictureState extends State<TakePicture> {
                   },
                   child: Container(
                     padding: EdgeInsets.all(4.0),
-                    child:Image.asset(Assets.capture),
+                    child: Image.asset(Assets.capture),
                   ),
                 ),
               ),
@@ -126,7 +162,7 @@ class _TakePictureState extends State<TakePicture> {
     try {
       // 1
       final path =
-        (await getTemporaryDirectory()).path+'${DateTime.now()}.png';
+          (await getTemporaryDirectory()).path + '${DateTime.now()}.png';
       // 2
       await controller.takePicture(path);
       // 3
@@ -141,4 +177,17 @@ class _TakePictureState extends State<TakePicture> {
     }
   }
 
+  void uploadImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      AppConfig.showToast("Unable to load Image");
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ScanAndSpot(imagePath: image.path),
+      ),
+    );
+  }
 }

@@ -14,7 +14,7 @@ import 'package:grow_lah/view/communication_section.dart';
 import 'package:grow_lah/view/monitor_screen.dart';
 import 'package:grow_lah/view/take_picture.dart';
 import 'package:grow_lah/view/video_screen.dart';
-
+import 'package:grow_lah/view/buy_home.dart';
 import 'commuication_detail.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -143,6 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget mainView() {
+    Size size = MediaQuery.of(context).size;
+    SizeConfig.screenHeight = size.height;
+    SizeConfig.screenWidth = size.width;
     return Container(
       child: GridView.builder(
           scrollDirection: Axis.vertical,
@@ -168,8 +171,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     child: Container(
                       color: Colors.white,
-                      height: 150,
-                      width: 141.0,
+                      height: getProportionateScreenHeight(150),
+                      width: getProportionateScreenWidth(141),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -281,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
       case 3:
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => BuyAndSell()));
+            context, MaterialPageRoute(builder: (context) => BuyHome()));
         break;
       case 4:
         Navigator.push(context,
