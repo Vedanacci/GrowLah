@@ -14,7 +14,7 @@ packages:
       name: arcore_flutter_plugin
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.8"
+    version: "0.0.10"
   args:
     dependency: transitive
     description:
@@ -22,6 +22,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.6.0"
+  arkit_plugin:
+    dependency: "direct main"
+    description:
+      name: arkit_plugin
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.6.0"
   async:
     dependency: transitive
     description:
@@ -373,6 +380,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3-nullsafety.1"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   liquid_swipe:
     dependency: "direct main"
     description:

@@ -18,6 +18,9 @@ import 'package:grow_lah/view/buy_home.dart';
 import 'commuication_detail.dart';
 import 'package:grow_lah/view/my_garden.dart';
 import 'my_orders.dart';
+import 'ar_view.dart';
+import 'ar_ios_view.dart';
+import 'buttonexpand.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -80,7 +83,7 @@ class _HomeScreenState extends State<HomeScreen> {
           drawer: getDrawer(),
           body: SingleChildScrollView(
             scrollDirection: Axis.vertical,
-            physics: NeverScrollableScrollPhysics(),
+            // physics: NeverScrollableScrollPhysics(),
             child: Container(
               color: Colors.transparent,
               child: Column(
@@ -103,10 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ChatBot()));
+                          Navigator.push(context,
+                              MaterialPageRoute(builder: (context) => ARIOS()));
                         },
                         child: Center(child: bottomIcon())),
                   )

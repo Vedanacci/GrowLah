@@ -212,6 +212,8 @@ PODS:
     - abseil/base/base_internal
     - abseil/base/config
     - abseil/meta/type_traits
+  - arkit_plugin (0.0.1):
+    - Flutter
   - BoringSSL-GRPC (0.0.7):
     - BoringSSL-GRPC/Implementation (= 0.0.7)
     - BoringSSL-GRPC/Interface (= 0.0.7)
@@ -395,6 +397,7 @@ PODS:
     - Flutter
 
 DEPENDENCIES:
+  - arkit_plugin (from `.symlinks/plugins/arkit_plugin/ios`)
   - camera (from `.symlinks/plugins/camera/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
@@ -437,6 +440,8 @@ SPEC REPOS:
     - Toast
 
 EXTERNAL SOURCES:
+  arkit_plugin:
+    :path: ".symlinks/plugins/arkit_plugin/ios"
   camera:
     :path: ".symlinks/plugins/camera/ios"
   cloud_firestore:
@@ -470,6 +475,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
+  arkit_plugin: 3e42571e8be84adabb8a178bd51c22fa981e16bd
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
   cloud_firestore: 88649a1f5b2da586da2f202ab14d100ff3653767
@@ -507,6 +513,6 @@ SPEC CHECKSUMS:
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: bfc7955c418d0db797614075aabbc58a39ab5107
 
-PODFILE CHECKSUM: d52f576e24174a1390943d97ea3cdd4a44af22cc
+PODFILE CHECKSUM: fee351b81710f1b88b7df693788a45423ee37618
 
 COCOAPODS: 1.10.0
