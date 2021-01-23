@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
+import 'package:grow_lah/model/extractImage.dart';
 import 'package:grow_lah/model/system_data.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/view/product_list.dart';
@@ -10,18 +11,20 @@ class ProductCard extends StatelessWidget {
       {Key key,
       this.width = 140,
       this.aspectRetio = 1.02,
-      @required this.indexIn,
+      //@required this.indexIn,
       @required this.product,
       this.padding})
       : super(key: key);
 
   final double width, aspectRetio;
-  final SystemData product;
-  final int indexIn;
+  final ProductData product;
+  //final int indexIn;
   final EdgeInsetsGeometry padding;
 
   @override
   Widget build(BuildContext context) {
+    print("ProductCard");
+    print(product.image);
     return Padding(
       padding: padding == null
           ? EdgeInsets.only(left: getProportionateScreenWidth(20))
@@ -36,7 +39,7 @@ class ProductCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => ProductPage(
-                        indexIn: indexIn,
+                        data: product,
                       ))),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +60,7 @@ class ProductCard extends StatelessWidget {
                       ),
                       child: Hero(
                         tag: product.name,
-                        child: Image.asset("images/onboarding1.png"),
+                        child: cachedImage(product.image),
                       ),
                     )),
               ),
@@ -125,7 +128,7 @@ class HorizontalProductCard extends StatelessWidget {
       : super(key: key);
 
   final double width, aspectRetio;
-  final SystemData product;
+  final ProductData product;
   final int indexIn;
   final EdgeInsetsGeometry padding;
 
@@ -141,7 +144,7 @@ class HorizontalProductCard extends StatelessWidget {
               context,
               MaterialPageRoute(
                   builder: (context) => ProductPage(
-                        indexIn: indexIn,
+                        data: product,
                       ))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -163,7 +166,7 @@ class HorizontalProductCard extends StatelessWidget {
                       ),
                       child: Hero(
                         tag: product.name,
-                        child: Image.asset("images/onboarding1.png"),
+                        child: cachedImage(product.image),
                       ),
                     )),
               ),
@@ -209,17 +212,16 @@ class HorizontalProductCard extends StatelessWidget {
 class ProductSwipe extends StatelessWidget {
   const ProductSwipe({
     Key key,
-    @required this.systemData,
+    @required this.productData,
   }) : super(key: key);
 
-  final List<SystemData> systemData;
+  final List<ProductData> productData;
   @override
   Widget build(BuildContext context) {
     List<Widget> products = [];
-    for (SystemData data in systemData) {
+    for (ProductData data in productData) {
       products.add(ProductCard(
         product: data,
-        indexIn: systemData.indexOf(data),
       ));
     }
     products.add(Padding(
@@ -269,17 +271,16 @@ class ProductSwipe extends StatelessWidget {
 class ProductGrid extends StatelessWidget {
   const ProductGrid({
     Key key,
-    @required this.systemData,
+    @required this.productData,
   }) : super(key: key);
 
-  final List<SystemData> systemData;
+  final List<ProductData> productData;
   @override
   Widget build(BuildContext context) {
     List<Widget> products = [];
-    for (SystemData data in systemData) {
+    for (ProductData data in productData) {
       products.add(ProductCard(
         product: data,
-        indexIn: systemData.indexOf(data),
         padding: EdgeInsets.all(10),
       ));
     }
@@ -318,7 +319,7 @@ class ProductGrid extends StatelessWidget {
                 spacing: 10,
                 runSpacing: 10,
                 crossAxisAlignment: WrapCrossAlignment.end,
-                alignment: WrapAlignment.center,
+                alignment: WrapAlignment.start,
                 runAlignment: WrapAlignment.end,
               ),
               SizedBox(height: getProportionateScreenWidth(30)),

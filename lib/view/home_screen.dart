@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -8,6 +9,8 @@ import 'package:grow_lah/model/options_list.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/view/app_drawer.dart';
+import 'package:grow_lah/view/ar_android_view.dart';
+import 'package:grow_lah/view/authentication.dart';
 import 'package:grow_lah/view/buy_sell.dart';
 import 'package:grow_lah/view/chat_bot.dart';
 import 'package:grow_lah/view/communication_section.dart';
@@ -54,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    print(FirebaseAuth.instance.currentUser);
     return Stack(
       children: <Widget>[
         AppConfig.bgWave(context),
@@ -87,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               color: Colors.transparent,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   // Padding(
@@ -102,12 +106,43 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   ),
                   // ),
                   mainView(),
+                  FirebaseAuth.instance.currentUser == null
+                      ? GestureDetector(
+                          onTap: () {
+                            Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        AuthenticationScreen()));
+                          },
+                          child: Neumorphic(
+                            style: NeumorphicStyle(
+                              color: Colors.transparent,
+                              boxShape: AppConfig.neuShape,
+                            ),
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: SizeConfig.screenWidth - 40,
+                              height: 110.0,
+                              color: Colors.green,
+                              child: Text(
+                                  "Sign Up to Unlock full functionality",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: AppConfig.roboto,
+                                      fontSize: 18)),
+                            ),
+                          ))
+                      : Container(),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
+                    padding: const EdgeInsets.only(bottom: 8.0, top: 40),
                     child: GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => ARIOS()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ARAndroid()));
                         },
                         child: Center(child: bottomIcon())),
                   )
@@ -149,18 +184,23 @@ class _HomeScreenState extends State<HomeScreen> {
     Size size = MediaQuery.of(context).size;
     SizeConfig.screenHeight = size.height;
     SizeConfig.screenWidth = size.width;
+    User user = FirebaseAuth.instance.currentUser;
+    List<Options> updatedList =
+        user != null ? optionsList : [optionsList[0]] + optionsList.sublist(3);
     return Container(
       child: GridView.builder(
           scrollDirection: Axis.vertical,
           physics: NeverScrollableScrollPhysics(),
-          itemCount: optionsList.length,
+          itemCount: updatedList.length,
           shrinkWrap: true,
           gridDelegate:
               SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
-                itemSelected(index);
+                user == null
+                    ? itemSelected((index == 0) ? index : index + 2)
+                    : itemSelected(index);
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),
@@ -181,12 +221,12 @@ class _HomeScreenState extends State<HomeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Image.asset(
-                            getImage(index),
+                            updatedList[index].image,
                             height: 44.0,
                             width: 60.0,
                           ),
                           Text(
-                            optionsList[index].title,
+                            updatedList[index].title,
                             style: TextStyle(
                               color: Colors.green,
                               fontFamily: AppConfig.roboto,
@@ -203,55 +243,8 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ignore: missing_return
-  String getImage(int index) {
-    switch (index) {
-      case 0:
-        return Assets.videoIcon;
-        break;
-      case 1:
-        return Assets.tempIcon;
-        break;
-      case 2:
-        return Assets.communicate;
-        break;
-      case 3:
-        return Assets.bigCart;
-        break;
-      case 4:
-        return Assets.newsFeed;
-        break;
-      case 5:
-        return Assets.scanSpot;
-        break;
-    }
-  }
-
   getDrawer() {
     return Drawer(child: AppDrawer());
-  }
-
-  getHeight(int index) {
-    switch (index) {
-      case 0:
-        return 157.0;
-        break;
-      case 1:
-        return 124.0;
-        break;
-      case 2:
-        return 124.0;
-        break;
-      case 3:
-        return 177.0;
-        break;
-      case 4:
-        return 135.0;
-        break;
-      case 5:
-        return 122.0;
-        break;
-    }
   }
 
   Widget bottomIcon() {

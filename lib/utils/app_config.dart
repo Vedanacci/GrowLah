@@ -37,10 +37,13 @@ class AppConfig {
   static NeumorphicStyle neuStyle = NeumorphicStyle(color: Colors.grey[100]);
   static NeumorphicBoxShape neuShape =
       NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(10.0)));
-  static appBar(String title, BuildContext context, bool showNotification) {
+  static appBar(String title, BuildContext context, bool showNotification,
+      {bool showRefer = true,
+      Color color = Colors.green,
+      double fontSize = 16}) {
     return AppBar(
       elevation: 0.0,
-      backgroundColor: Colors.white,
+      backgroundColor: (color == Colors.green) ? Colors.white : Colors.green,
       centerTitle: true,
       leading: GestureDetector(
         onTap: () {
@@ -48,7 +51,7 @@ class AppConfig {
         },
         child: Icon(
           Icons.arrow_back_ios,
-          color: Colors.green,
+          color: color,
           size: 24,
         ),
       ),
@@ -56,26 +59,28 @@ class AppConfig {
         title,
         style: TextStyle(
             fontFamily: AppConfig.roboto,
-            fontSize: 16.0,
+            fontSize: fontSize,
             fontWeight: FontWeight.bold,
-            color: Colors.green),
+            color: color),
       ),
       actions: <Widget>[
-        GestureDetector(
-          onTap: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ReferAndEarn()));
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-            child: Image.asset(
-              Assets.stock,
-              color: Colors.green,
-              height: 15.0,
-              width: 15.0,
-            ),
-          ),
-        ),
+        showRefer
+            ? GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ReferAndEarn()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: Image.asset(
+                    Assets.stock,
+                    color: color,
+                    height: 15.0,
+                    width: 15.0,
+                  ),
+                ),
+              )
+            : Container(),
         showNotification
             ? InkWell(
                 onTap: () {
@@ -88,7 +93,7 @@ class AppConfig {
                   padding: const EdgeInsets.only(left: 10.0, right: 20.0),
                   child: Image.asset(
                     Assets.notification,
-                    color: Colors.green,
+                    color: color,
                     height: 18.0,
                     width: 18.0,
                   ),
@@ -115,7 +120,8 @@ class AppConfig {
   }
 
   static void hideKeyBoard() =>
-      SystemChannels.textInput.invokeMethod('TextInput.hide');
+      //SystemChannels.textInput.invokeMethod('TextInput.hide');
+      FocusManager.instance.primaryFocus.unfocus();
 }
 
 class SizeConfig {

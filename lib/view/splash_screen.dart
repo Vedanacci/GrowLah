@@ -23,7 +23,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    AppConfig.hideKeyBoard();
     super.initState();
     print("Loaded");
     Future.delayed(const Duration(seconds: 1), () async {

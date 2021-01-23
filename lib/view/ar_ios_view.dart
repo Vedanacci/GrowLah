@@ -9,6 +9,7 @@ import 'package:grow_lah/utils/assets.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 import 'dart:math';
+import 'product_carousel.dart';
 //import 'package:grow_lah/model/arIOSExtras.dart';
 
 class PlaneClass {
@@ -38,6 +39,7 @@ class _ARIOSState extends State<ARIOS> with SingleTickerProviderStateMixin {
   List<vector.Vector3> points = [];
   List<PlaneClass> planes = [];
   List<String> nodeNames = [];
+  static List<double> dimensions = [];
   double angle = 0;
 
   bool isOpened = false;
@@ -129,6 +131,9 @@ class _ARIOSState extends State<ARIOS> with SingleTickerProviderStateMixin {
     this.arkitController.onAddNodeForAnchor = _handleAddAnchor;
     this.arkitController.onUpdateNodeForAnchor = _handleUpdateAnchor;
     this.arkitController.onARTap = (List<ARKitTestResult> ar) {
+      if (pointNo == 3) {
+        return;
+      }
       final planeTap = ar.firstWhere(
         (tap) => tap.type == ARKitHitTestResultType.existingPlaneUsingExtent,
         orElse: () => null,
@@ -190,8 +195,8 @@ class _ARIOSState extends State<ARIOS> with SingleTickerProviderStateMixin {
     //addPlaneText(controller, anchor);
     ARKitMaterial material = ARKitMaterial(
       transparency: 0.5,
-      diffuse: ARKitMaterialProperty(
-          color: Colors.green, image: 'images/onboarding1.png'),
+      //multiply: ARKitMaterialProperty(color: Colors.green),
+      diffuse: ARKitMaterialProperty(color: Colors.green),
     );
 
     plane = ARKitPlane(
@@ -284,6 +289,7 @@ class _ARIOSState extends State<ARIOS> with SingleTickerProviderStateMixin {
                   _getMiddleVector(oldPoint, newPoint)));
         }
         joinVectors(newPoint, oldPoint, len3to4, displayText: false);
+        dimensions = [len3to4, len4to1];
 
         arkitController.remove("arrow");
       }
@@ -629,6 +635,17 @@ class _ARIOSState extends State<ARIOS> with SingleTickerProviderStateMixin {
                             fontFamily: AppConfig.roboto, fontSize: 20),
                       ),
                     ),
+                    onTap: () {
+                      if (dimensions.length == 2) {
+                        dimensions.add(double.infinity);
+                      }
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductCarousel(
+                                    scannedData: ScannedData(dimensions),
+                                  )));
+                    },
                   ),
                   // SizedBox(
                   //   height: 20,

@@ -9,7 +9,9 @@ class FeedsModel {
   bool isLiked;
   List comments;
   String image;
+  String profileImage;
+  String date;
 
   FeedsModel(this.id, this.authorName, this.title, this.likes, this.isLiked,
-      this.comments, this.image, this.content);
+      this.comments, this.image, this.content, this.profileImage, this.date);
 }

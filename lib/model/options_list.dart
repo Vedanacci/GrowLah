@@ -1,16 +1,16 @@
 import 'package:grow_lah/utils/common_strings.dart';
-
+import 'package:grow_lah/utils/assets.dart';
 import 'options.dart';
 
 class OptionsList {
   static List<Options> optionList() {
     List<Options> options = [
-      Options(1, CommonStrings.videoStory),
-      Options(2, CommonStrings.monitor),
-      Options(3, "Activity"),
-      Options(4, CommonStrings.buyAndSell),
-      Options(5, CommonStrings.newsFeed),
-      Options(6, CommonStrings.scanSpot)
+      Options(1, CommonStrings.videoStory, Assets.videoIcon),
+      Options(2, CommonStrings.monitor, Assets.tempIcon),
+      Options(3, "ACTIVITY", Assets.communicate),
+      Options(4, "BUY", Assets.bigCart),
+      Options(5, CommonStrings.newsFeed, Assets.newsFeed),
+      Options(6, CommonStrings.scanSpot, Assets.scanSpot)
     ];
     return options;
   }

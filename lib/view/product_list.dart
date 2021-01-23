@@ -9,7 +9,10 @@ import 'buy_home.dart';
 import 'product_page.dart';
 
 class ProductList extends StatefulWidget {
-  ProductList({Key key}) : super(key: key);
+  ProductList({Key key, this.filter = 0}) : super(key: key);
+
+  final int filter;
+
   @override
   _ProductListState createState() {
     return _ProductListState();
@@ -17,10 +20,13 @@ class ProductList extends StatefulWidget {
 }
 
 class _ProductListState extends State<ProductList> {
-  List<SystemData> systemData = SystemData.defaultData;
+  List<ProductData> productData =
+      List<ProductData>.from(SystemData.defaultData);
 
   @override
   void initState() {
+    productData.addAll(NutrientData.defaultData);
+    productData.addAll(SeedData.defaultData);
     reloadSystems();
     super.initState();
   }
@@ -31,9 +37,20 @@ class _ProductListState extends State<ProductList> {
   }
 
   Future reloadSystems() async {
-    List<SystemData> data = await SystemData.getSystems();
+    List<ProductData> data = [];
+    if (widget.filter == 1) {
+      data = List<ProductData>.from(await SystemData.getSystems());
+    } else if (widget.filter == 2) {
+      data = List<ProductData>.from(await NutrientData.getNutrients());
+    } else if (widget.filter == 3) {
+      data = List<ProductData>.from(await SeedData.getSeeds());
+    } else {
+      data = List<ProductData>.from(await SystemData.getSystems());
+      data.addAll(await NutrientData.getNutrients());
+      data.addAll(await SeedData.getSeeds());
+    }
     setState(() {
-      systemData = data;
+      productData = data;
     });
   }
 
@@ -88,7 +105,7 @@ class _ProductListState extends State<ProductList> {
         ],
       ),
       body: SingleChildScrollView(
-        child: ProductGrid(systemData: systemData),
+        child: ProductGrid(productData: productData),
       ),
     );
   }

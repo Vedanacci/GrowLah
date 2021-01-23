@@ -140,6 +140,12 @@ class _VideosScreenState extends State<VideosScreen> {
 
   getChewieController(int index) {
     _chewieController = ChewieController(
+        // placeholder: Container(
+        //     width: SizeConfig.screenWidth - 20,
+        //     color: Colors.white,
+        //     child: RefreshProgressIndicator(
+        //       valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+        //     )),
         autoInitialize: true,
         aspectRatio: 3 / 2,
         videoPlayerController:

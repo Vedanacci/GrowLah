@@ -1,8 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
+import 'package:grow_lah/view/ar_android_view.dart';
+import 'package:grow_lah/view/ar_ios_view.dart';
+import 'package:grow_lah/view/custom_order.dart';
+import 'package:grow_lah/view/signUptoContinue.dart';
 import 'product_carousel.dart';
 import 'package:grow_lah/model/system_data.dart';
 import 'product_card.dart';
@@ -10,6 +15,7 @@ import 'home_screen.dart';
 import 'product_page.dart';
 import 'product_list.dart';
 import 'cart.dart';
+import 'dart:io' show Platform;
 
 class BuyHome extends StatefulWidget {
   BuyHome({Key key}) : super(key: key);
@@ -21,10 +27,14 @@ class BuyHome extends StatefulWidget {
 }
 
 class _BuyHomeState extends State<BuyHome> {
-  List<SystemData> systemData = SystemData.defaultData;
+  List<ProductData> productData =
+      List<ProductData>.from(SystemData.defaultData);
 
   @override
   void initState() {
+    productData.addAll(NutrientData.defaultData);
+    productData.addAll(SeedData.defaultData);
+    reloadSystems();
     super.initState();
   }
 
@@ -34,9 +44,12 @@ class _BuyHomeState extends State<BuyHome> {
   }
 
   Future reloadSystems() async {
-    List<SystemData> data = await SystemData.getSystems();
+    List<ProductData> data =
+        List<ProductData>.from(await SystemData.getSystems());
+    data.addAll(await NutrientData.getNutrients());
+    data.addAll(await SeedData.getSeeds());
     setState(() {
-      systemData = data;
+      productData = data;
     });
   }
 
@@ -79,8 +92,17 @@ class _BuyHomeState extends State<BuyHome> {
                   children: [
                     GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Cart()));
+                          if (FirebaseAuth.instance.currentUser != null) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Cart()));
+                          } else {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SignContinue()));
+                          }
                         },
                         child: Icon(
                           Icons.shopping_cart_outlined,
@@ -99,40 +121,86 @@ class _BuyHomeState extends State<BuyHome> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                GestureDetector(
-                  child: Neumorphic(
-                    style: AppConfig.neuStyle.copyWith(color: Colors.green),
-                    padding: EdgeInsets.only(
-                        top: 30, bottom: 30, left: 50, right: 50),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          'images/scan_spot.png',
-                          color: Colors.white,
-                          fit: BoxFit.fill,
-                          height: 100,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(top: 20),
-                          child: Text(
-                            "Scan Area",
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontFamily: AppConfig.roboto,
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: (SizeConfig.screenWidth - 60) / 2,
+                        child: GestureDetector(
+                          child: Neumorphic(
+                            style: AppConfig.neuStyle
+                                .copyWith(color: Colors.green),
+                            padding: EdgeInsets.only(top: 30, bottom: 30),
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  'images/scan_spot.png',
+                                  color: Colors.white,
+                                  fit: BoxFit.fill,
+                                  height:
+                                      (SizeConfig.screenWidth - 50) / 4 - 40,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Text(
+                                    "Scan Area",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: AppConfig.roboto,
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  onTap: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ProductCarousel()));
-                  },
-                ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => (Platform.isAndroid)
+                                        ? ARAndroid()
+                                        : ARIOS()));
+                          },
+                        ),
+                      ),
+                      Container(
+                        width: (SizeConfig.screenWidth - 60) / 2,
+                        child: GestureDetector(
+                          child: Neumorphic(
+                            style: AppConfig.neuStyle
+                                .copyWith(color: Colors.green),
+                            padding: EdgeInsets.only(top: 30, bottom: 30),
+                            child: Column(
+                              children: [
+                                Icon(
+                                  Icons.add,
+                                  size: (SizeConfig.screenWidth - 50) / 4 - 40,
+                                  color: Colors.white,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(top: 20),
+                                  child: Text(
+                                    "Custom Order",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontFamily: AppConfig.roboto,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CustomOrder()));
+                          },
+                        ),
+                      )
+                    ]),
                 Padding(
                   padding: EdgeInsets.only(top: 30),
                   child: Text(
@@ -172,7 +240,9 @@ class _BuyHomeState extends State<BuyHome> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => ProductList()));
+                              builder: (context) => ProductList(
+                                    filter: 1,
+                                  )));
                     },
                   ),
                   padding: EdgeInsets.only(top: 30, left: 20, right: 20),
@@ -198,7 +268,14 @@ class _BuyHomeState extends State<BuyHome> {
                         ],
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductList(
+                                    filter: 2,
+                                  )));
+                    },
                   ),
                   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                 ),
@@ -223,14 +300,21 @@ class _BuyHomeState extends State<BuyHome> {
                         ],
                       ),
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductList(
+                                    filter: 3,
+                                  )));
+                    },
                   ),
                   padding: EdgeInsets.only(top: 20, left: 20, right: 20),
                 ),
                 Padding(
                   padding: EdgeInsets.only(bottom: 20),
                 ),
-                ProductSwipe(systemData: systemData)
+                ProductSwipe(productData: productData)
               ],
             ),
           ))),

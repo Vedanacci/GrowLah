@@ -116,7 +116,7 @@ class FeedsUtils {
     );
   }
 
-  static loadForImage(String image) {
+  static Widget loadForImage(String image) {
     return image != null
         ? Center(
             child: Padding(

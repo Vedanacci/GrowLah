@@ -17,6 +17,7 @@ import 'package:grow_lah/view/post_ad.dart';
 import 'package:grow_lah/view/profile_screen.dart';
 import 'package:grow_lah/view/refer_earn.dart';
 import 'package:grow_lah/view/settings.dart';
+import 'package:grow_lah/view/signUptoContinue.dart';
 import 'authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -73,8 +74,10 @@ class _AppDrawerState extends State<AppDrawer> {
                   padding: const EdgeInsets.only(left: 20.0, top: 20.0),
                   child: InkWell(
                     onTap: () {
-                      var route0 =
-                          MaterialPageRoute(builder: (context) => MyProfile());
+                      var route0 = FirebaseAuth.instance.currentUser != null
+                          ? MaterialPageRoute(builder: (context) => MyProfile())
+                          : MaterialPageRoute(
+                              builder: (context) => SignContinue());
                       var route1 = MaterialPageRoute(
                           builder: (context) => DonateScreen());
                       var route2 =
@@ -130,7 +133,10 @@ class _AppDrawerState extends State<AppDrawer> {
                             Padding(
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
-                                drawerList[index].title,
+                                (FirebaseAuth.instance.currentUser == null &&
+                                        index == 6)
+                                    ? "Log In"
+                                    : drawerList[index].title,
                                 style: TextStyle(
                                     fontFamily: AppConfig.roboto,
                                     fontWeight: FontWeight.bold),

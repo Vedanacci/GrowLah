@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
@@ -9,6 +10,10 @@ import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grow_lah/model/user_model.dart';
+import 'package:grow_lah/model/extractImage.dart';
 
 class MyProfile extends StatefulWidget {
   MyProfile({Key key}) : super(key: key);
@@ -27,16 +32,36 @@ class _MyProfileState extends State<MyProfile> {
   String imagePath = '';
   File imageFile;
   List<dynamic> myList = List();
+  UserModel user = UserModel("id", "name", "email", "phoneNumber");
 
   @override
   void initState() {
     myList = ProfileModel.profileList();
+    downloadUser();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void downloadUser() async {
+    UserModel downloadedUser = await UserModel.getUser();
+    setState(() {
+      user = downloadedUser;
+    });
+    loadImage();
+  }
+
+  void loadImage() async {
+    String urlImage = await FirebaseStorage.instance
+        .ref("/Users/" + user.id + ".jpg")
+        .getDownloadURL();
+    setState(() {
+      imagePath = urlImage;
+    });
+    ;
   }
 
   @override
@@ -62,11 +87,8 @@ class _MyProfileState extends State<MyProfile> {
                     child: Container(
                       height: 120.0,
                       width: 120.0,
-                      child: imageFile != null
-                          ? Image.file(
-                              imageFile,
-                              fit: BoxFit.cover,
-                            )
+                      child: imagePath != null
+                          ? cachedImage(imagePath)
                           : Image.asset(Assets.manIcon),
                     ),
                   ),
@@ -77,7 +99,7 @@ class _MyProfileState extends State<MyProfile> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Name',
+                  user.name,
                   style: TextStyle(
                       color: Colors.green,
                       fontFamily: AppConfig.roboto,
@@ -166,12 +188,21 @@ class _MyProfileState extends State<MyProfile> {
         });
   }
 
+  void updateImage(File image) {
+    var imageRef = FirebaseStorage.instance.ref().child("Users/${user.id}.jpg");
+    imageRef.putFile(image).then((snapshot) {
+      print("Uploaded profile photo");
+      loadImage();
+    });
+  }
+
   openCamera() async {
     var image = await ImagePicker.pickImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = image;
     });
-    Navigator.pop(context);
+    updateImage(image);
+    //Navigator.pop(context);
   }
 
   openGallery() async {
@@ -179,7 +210,8 @@ class _MyProfileState extends State<MyProfile> {
     this.setState(() {
       imageFile = picture;
     });
-    Navigator.of(context).pop();
+    updateImage(picture);
+    //Navigator.of(context).pop();
   }
 
   seeImage() {
@@ -190,11 +222,8 @@ class _MyProfileState extends State<MyProfile> {
             child: Container(
               height: 300.0,
               width: 200.0,
-              child: imageFile != null
-                  ? Image.file(
-                      imageFile,
-                      fit: BoxFit.cover,
-                    )
+              child: imagePath != null
+                  ? cachedImage(imagePath)
                   : Image.asset(Assets.manIcon),
             ),
           );

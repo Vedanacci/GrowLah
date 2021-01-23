@@ -38,7 +38,7 @@ class _DonateScreenState extends State<DonateScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppConfig.appBar(CommonStrings.donate, context, true),
+      appBar: AppConfig.appBar("Give", context, true),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
@@ -50,7 +50,7 @@ class _DonateScreenState extends State<DonateScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  CommonStrings.makeDonation,
+                  "Give produce!",
                   style: TextStyle(
                       color: Colors.green,
                       fontSize: 16.0,

@@ -21,10 +21,11 @@ class Cart extends StatefulWidget {
 }
 
 class _CartState extends State<Cart> {
-  List<SystemData> cartData = SystemData.defaultData;
+  List<ProductData> cartData = List<ProductData>.from(SystemData.defaultData);
 
   @override
   void initState() {
+    cartData.addAll(NutrientData.defaultData);
     super.initState();
     reloadSystems();
   }
@@ -35,7 +36,7 @@ class _CartState extends State<Cart> {
   }
 
   Future reloadSystems() async {
-    List<SystemData> data = await CartData.getSystems();
+    List<ProductData> data = await CartData.getSystems();
     setState(() {
       cartData = data;
     });
@@ -44,7 +45,7 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     List<Widget> products = [];
-    for (SystemData data in cartData) {
+    for (ProductData data in cartData) {
       Dismissible dismissible = Dismissible(
           confirmDismiss: (direction) async {
             return await showDialog(

@@ -113,7 +113,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
               // ),
               TextButton(
                 child: Text(
-                  page == 2 ? "Continue Home" : "Next",
+                  page == 2 ? "Continue" : "Next",
                   style: TextStyle(
                       fontSize: 18.0,
                       fontFamily: AppConfig.roboto,
@@ -163,6 +163,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                           : index == 2
                               ? "Smart Agriculture"
                               : "Online Marketplace",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 32.0,
                           fontFamily: AppConfig.roboto,
@@ -171,7 +172,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20),
+                    padding: EdgeInsets.only(left: 0, right: 0),
                     child: Text(
                         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et rhoncus sed amet nibh curabitur amet at purus. Vel commodo a.",
                         style: TextStyle(

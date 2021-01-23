@@ -8,14 +8,13 @@ import 'package:grow_lah/model/sample_feeds.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:grow_lah/view/article.dart';
 import 'package:grow_lah/view/feeds_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 class DetailCommunication extends StatefulWidget {
   DetailCommunication({Key key}) : super(key: key);
-  bool hasImage = false;
-  bool hasVideo = false;
 
   @override
   _DetailCommunicationState createState() {
@@ -66,7 +65,11 @@ class _DetailCommunicationState extends State<DetailCommunication> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => FeedsDetail(
+                      builder: (context) =>
+                          // FeedsDetail(
+                          //       feedsModel: feedsList[index],
+                          //     )
+                          Article(
                             feedsModel: feedsList[index],
                           )));
             },
@@ -122,7 +125,10 @@ class _DetailCommunicationState extends State<DetailCommunication> {
                                         //     ))
 
                                         CachedNetworkImage(
-                                            imageUrl: images[index],
+                                            imageUrl: images[index]
+                                                    .startsWith("https://")
+                                                ? images[index]
+                                                : "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
                                             fit: BoxFit.fill,
                                             placeholder: (context, url) {
                                               return RefreshProgressIndicator(
@@ -156,7 +162,7 @@ class _DetailCommunicationState extends State<DetailCommunication> {
                                 ),
                               ),
                               Text(
-                                'Wed 23, Sep 2020',
+                                feedsList[index].date,
                                 style: TextStyle(
                                     fontFamily: AppConfig.roboto,
                                     color: Colors.grey),
@@ -238,11 +244,12 @@ class _DetailCommunicationState extends State<DetailCommunication> {
   downloadFeed() async {
     List<FeedsModel> downloadList = [];
     List newImages = [];
+    List newProfile = [];
     User user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance
         .collectionGroup("NewsFeed")
         .get()
-        .then((feed) {
+        .then((feed) async {
       feed.docs.forEach((element) {
         Map<String, dynamic> data = element.data();
         print(data);
@@ -253,40 +260,45 @@ class _DetailCommunicationState extends State<DetailCommunication> {
             data['Author'],
             data['Title'],
             data['Likes'],
-            (likedBy.contains(user.uid)),
+            user != null ? (likedBy.contains(user.uid)) : false,
             data['Comments'],
             data['Image'],
-            data['Text']);
+            data['Text'],
+            data['ProfilePhoto'],
+            data['Date']);
         downloadList.add(article);
         newImages.add(data['Image']);
+        newProfile.add(data['ProfilePhoto']);
       });
       feedsList = downloadList;
       images = newImages;
-      print(images + newImages);
-      convertImage(images);
+      await convertImage(images);
+      await convertImage(newProfile, type: 1);
     });
   }
 
-  convertImage(List imagesIn) async {
+  convertImage(List imagesIn, {int type = 0}) async {
     print("Converting images");
-    print(imagesIn);
     List updatedImages = [];
     for (var image in imagesIn) {
       if (image != null) {
-        Reference ref = FirebaseStorage.instance.ref("/News/" + image);
+        Reference ref = FirebaseStorage.instance
+            .ref(type == 1 ? "/Products/" + image : "/News/" + image);
         String link = await ref.getDownloadURL();
-        print("Url" + link);
         updatedImages.add(link);
       } else {
+        print("image null");
         updatedImages.add(null);
       }
     }
     setState(() {
-      images = updatedImages;
+      if (type == 0) {
+        images = updatedImages;
+      }
       for (var list in feedsList) {
-        list.image = images[feedsList.indexOf(list)];
-        print(list.title);
-        print(list.image);
+        type == 1
+            ? list.profileImage = updatedImages[feedsList.indexOf(list)]
+            : list.image = images[feedsList.indexOf(list)];
       }
     });
   }

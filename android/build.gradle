@@ -14,16 +14,16 @@ buildscript {
 }
 
 
-allprojects {
-    repositories {
-        flatDir {
-            //dirs "${project(':unityLibrary').projectDir}/libs"
-        }
+// allprojects {
+//     repositories {
+//         flatDir {
+//             //dirs "${project(':unityLibrary').projectDir}/libs"
+//         }
 
-        google()
-        jcenter()
-    }
-}
+//         google()
+//         jcenter()
+//     }
+// }
 
 rootProject.buildDir = '../build'
 subprojects {
