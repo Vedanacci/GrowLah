@@ -59,6 +59,55 @@ class _GardenMonitorState extends State<GardenMonitor>
   Animation<double> _translateMenu;
   AnimationController _menuController;
 
+  List<double> lightData = [79.0];
+  List<double> phData = [7.0];
+
+  Future getSensorData() async {
+    print("started");
+    final databaseReference =
+        FirebaseDatabase.instance.reference().child("vedantbahadur");
+
+    StreamSubscription<Event> subscription =
+        databaseReference.onValue.listen((event) {
+      var count = (event.snapshot.value["count"] == null)
+          ? 0
+          : event.snapshot.value["count"] - 1;
+      databaseReference
+          .child("light")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print("In light");
+        print(snapshot.value);
+        var val = snapshot.value;
+        val = (val * 10000 / 4095.0).round() / 100;
+        print("Val: $val");
+        if (mounted) {
+          print("Mounted");
+          setState(() {
+            lightData = [val];
+          });
+        }
+      });
+      databaseReference
+          .child("ph")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print("In PH");
+        print(snapshot.value);
+        var val = snapshot.value;
+        print("PH Val: $val");
+        if (mounted) {
+          setState(() {
+            phData = [val];
+          });
+        }
+      });
+    });
+    return subscription;
+  }
+
   void initState() {
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: 500), value: 0)
@@ -148,6 +197,7 @@ class _GardenMonitorState extends State<GardenMonitor>
     //animateMenu();
     _progressController.forward();
     super.initState();
+    getSensorData();
   }
 
   @override
@@ -185,6 +235,9 @@ class _GardenMonitorState extends State<GardenMonitor>
     // print(_translateButton.value);
     // print(current);
     List<Widget> labelText = getLabelText(["Levels", "Metrics", "Activity"]);
+    print("building");
+    print(lightData);
+    print(phData);
 
     Widget share() {
       return Container(
@@ -352,6 +405,9 @@ class _GardenMonitorState extends State<GardenMonitor>
   }
 
   Widget levels() {
+    print("building");
+    print(lightData);
+    print(phData);
     return Column(
       children: [
         Container(
@@ -399,7 +455,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "PH Measurements : ${7.6}",
+            "PH Measurements : ${(phData == null) ? 'Error' : phData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -408,7 +464,8 @@ class _GardenMonitorState extends State<GardenMonitor>
             ),
           ),
         ),
-        curvedProgress(_progress.value, 0, 14, 7.6),
+        curvedProgress(_progress.value, 0, 14,
+            (phData == null) ? 0 : phData[0].toDouble()),
         SizedBox(
           height: 50,
         ),
@@ -416,7 +473,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "Light Ambience (%) : ${23}",
+            "Light Ambience (%) : ${(lightData == null) ? 'Error' : lightData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -425,7 +482,8 @@ class _GardenMonitorState extends State<GardenMonitor>
             ),
           ),
         ),
-        curvedProgress(_progress.value, 0, 100, 23)
+        curvedProgress(
+            _progress.value, 0, 100, (lightData == null) ? 0 : lightData[0])
       ],
     );
   }

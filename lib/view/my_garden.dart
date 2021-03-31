@@ -15,6 +15,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:grow_lah/model/extractImage.dart';
 import 'package:grow_lah/view/garden_monitor.dart';
+import 'package:grow_lah/view/give.dart';
 import 'package:grow_lah/view/monitor_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:grow_lah/model/system_data.dart';
@@ -228,8 +229,15 @@ class _GardenScreenState extends State<GardenScreen> {
                     child: ListView.builder(
                       itemCount: images.length,
                       itemBuilder: (context, index) {
-                        return plantSlides(
-                            context, images[index], names[index]);
+                        return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Give()));
+                            },
+                            child: plantSlides(
+                                context, images[index], names[index]));
                       },
                       scrollDirection: Axis.horizontal,
                     ),

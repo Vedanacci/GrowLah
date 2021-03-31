@@ -11,6 +11,7 @@ import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/view/ar_view.dart';
 import 'package:grow_lah/view/donate_screen.dart';
+import 'package:grow_lah/view/give.dart';
 import 'package:grow_lah/view/my_orders.dart';
 import 'package:grow_lah/view/my_subs.dart';
 import 'package:grow_lah/view/post_ad.dart';
@@ -78,8 +79,8 @@ class _AppDrawerState extends State<AppDrawer> {
                           ? MaterialPageRoute(builder: (context) => MyProfile())
                           : MaterialPageRoute(
                               builder: (context) => SignContinue());
-                      var route1 = MaterialPageRoute(
-                          builder: (context) => DonateScreen());
+                      var route1 =
+                          MaterialPageRoute(builder: (context) => Give());
                       var route2 =
                           MaterialPageRoute(builder: (context) => Settings());
                       var route3 =
