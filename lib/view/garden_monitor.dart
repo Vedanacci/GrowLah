@@ -82,10 +82,11 @@ class _GardenMonitorState extends State<GardenMonitor>
         var val = snapshot.value;
         val = (val * 10000 / 4095.0).round() / 100;
         print("Val: $val");
-        if (mounted) {
+        if (val != lightData[0]) {
           print("Mounted");
           setState(() {
             lightData = [val];
+            animate(1);
           });
         }
       });
@@ -101,6 +102,7 @@ class _GardenMonitorState extends State<GardenMonitor>
         if (mounted) {
           setState(() {
             phData = [val];
+            animate(1);
           });
         }
       });
