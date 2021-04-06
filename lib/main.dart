@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:grow_lah/view/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 bool loginNeeded = false;
 
@@ -32,6 +33,10 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.green),
       debugShowCheckedModeBanner: false,

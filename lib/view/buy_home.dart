@@ -156,16 +156,16 @@ class _BuyHomeState extends State<BuyHome> {
                             ),
                           ),
                           onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => (Platform.isAndroid)
-                            //             ? ARAndroid()
-                            //             : ARIOS()));
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => BuyFlow()));
+                                    builder: (context) => (Platform.isAndroid)
+                                        ? ARAndroid()
+                                        : ARIOS()));
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => BuyFlow()));
                           },
                         ),
                       ),

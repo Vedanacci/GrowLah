@@ -8,6 +8,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:carousel_slider/carousel_options.dart';
 import 'package:grow_lah/model/system_data.dart';
 import 'package:grow_lah/view/ar_ios_view.dart';
+import 'package:grow_lah/view/buyflow.dart';
 import 'package:grow_lah/view/product_list.dart';
 import 'product_page.dart';
 import 'home_screen.dart';
@@ -365,7 +366,7 @@ class _ProductCarouselState extends State<ProductCarousel> {
                         Padding(
                           child: NeumorphicButton(
                             child: Text(
-                              "View More",
+                              "Continue",
                               style: TextStyle(
                                   fontSize: MediaQuery.of(context).size.height *
                                       0.024,
@@ -380,11 +381,17 @@ class _ProductCarouselState extends State<ProductCarousel> {
                                     : Colors.white,
                                 shadowLightColor: Colors.transparent),
                             onPressed: () {
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //         builder: (context) => ProductPage(
+                              //               data: systemData[index],
+                              //             )));
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ProductPage(
-                                            data: systemData[index],
+                                      builder: (context) => BuyFlow(
+                                            system: systemData[index],
                                           )));
                             },
                           ),
