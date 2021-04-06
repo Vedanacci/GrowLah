@@ -6,6 +6,7 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/view/ar_android_view.dart';
 import 'package:grow_lah/view/ar_ios_view.dart';
+import 'package:grow_lah/view/buyflow.dart';
 import 'package:grow_lah/view/custom_order.dart';
 import 'package:grow_lah/view/signUptoContinue.dart';
 import 'product_carousel.dart';
@@ -143,7 +144,7 @@ class _BuyHomeState extends State<BuyHome> {
                                 Padding(
                                   padding: EdgeInsets.only(top: 20),
                                   child: Text(
-                                    "Scan Area",
+                                    "Smart Order",
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontSize: 20,
@@ -155,12 +156,16 @@ class _BuyHomeState extends State<BuyHome> {
                             ),
                           ),
                           onTap: () {
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => (Platform.isAndroid)
+                            //             ? ARAndroid()
+                            //             : ARIOS()));
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => (Platform.isAndroid)
-                                        ? ARAndroid()
-                                        : ARIOS()));
+                                    builder: (context) => BuyFlow()));
                           },
                         ),
                       ),

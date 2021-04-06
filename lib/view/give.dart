@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
+import 'package:grow_lah/view/success.dart';
 import 'package:json_to_form/json_to_form.dart';
 import 'cart.dart';
 import 'dart:convert';
@@ -46,6 +47,8 @@ class _GiveState extends State<Give> {
         .update({'Give': FieldValue.arrayUnion(data)}).then((value) {
       print("Success");
     }).catchError((error) => print("Failed to update user: $error"));
+
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Success()));
   }
 
   String form = json.encode([
