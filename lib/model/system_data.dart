@@ -20,6 +20,65 @@ class ProductData {
   }
 }
 
+class SensorData extends ProductData {
+  String name;
+  String image;
+  double price;
+  String description;
+  int quantity;
+
+  final productType = 3;
+
+  SensorData(this.name, this.image, this.price, this.description,
+      {this.quantity});
+
+  static String systemDescription = "IOT Sensors help to monitor and track";
+
+  static List<SensorData> defaultData = [
+    SensorData("PH Sensor", "image.png", 49.99, systemDescription),
+  ];
+
+  static Future<List<SensorData>> getSeeds() async {
+    List<SensorData> sensorList = [];
+    await FirebaseFirestore.instance
+        .collectionGroup("Sensors")
+        .get()
+        .then((feed) async {
+      await Future.forEach(feed.docs, (element) async {
+        Map<String, dynamic> data = element.data();
+        print(data);
+        String image = data["image"];
+        String urlImage = await FirebaseStorage.instance
+            .ref("/Products/" + image)
+            .getDownloadURL();
+        SensorData sensorData = SensorData(
+          data["name"],
+          urlImage,
+          data["price"].toDouble(),
+          data["description"],
+        );
+        sensorList.add(sensorData);
+      });
+    });
+    return sensorList == [] ? defaultData : sensorList;
+  }
+
+  Future<void> writeSeeds() async {
+    await FirebaseFirestore.instance
+        .collection("Sensors")
+        .doc(name)
+        .set({
+          'name': name,
+          'image': image,
+          "size": size,
+          "price": price,
+          "description": description
+        })
+        .then((value) => print("Sensor Added"))
+        .catchError((error) => print("Failed to add Sensor: $error"));
+  }
+}
+
 class SeedData extends ProductData {
   String name;
   String image;
@@ -296,6 +355,29 @@ class CartData {
             productList.add(product);
             break;
           }
+        }
+        if (item == "Custom") {
+          print(item);
+          print(mapCartdata[item]);
+          List<dynamic> customItems = mapCartdata[item];
+          print(customItems);
+          for (var item2 in customItems) {
+            print(item2);
+            Map<String, dynamic> listItem = item2;
+            ProductData product = ProductData();
+            product.name = listItem["name"];
+            product.image = listItem['image'];
+            product.image = await FirebaseStorage.instance
+                .ref("/Products/" + product.image)
+                .getDownloadURL();
+            product.quantity = listItem['qty'];
+            product.price = listItem['price'].toDouble();
+            productList.add(product);
+            print(listItem);
+            print(listItem["name"]);
+          }
+          print("Custom");
+          print(customItems);
         }
       }
       if (productList.isEmpty) {

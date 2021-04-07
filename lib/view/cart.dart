@@ -39,8 +39,13 @@ class _CartState extends State<Cart> {
     List<ProductData> data = await CartData.getSystems();
     setState(() {
       cartData = data;
+      for (ProductData productData in data) {
+        cost += productData.price;
+      }
     });
   }
+
+  double cost = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +89,10 @@ class _CartState extends State<Cart> {
                 .collection("Users")
                 .doc(user.uid)
                 .update({
-              "Cart." + data.name: FieldValue.increment(-1),
+              "Cart." + data.name: 0,
+            });
+            setState(() {
+              cost -= data.price * data.quantity;
             });
           },
           background: Container(
@@ -181,7 +189,7 @@ class _CartState extends State<Cart> {
                     Padding(
                       padding: EdgeInsets.symmetric(
                           horizontal: getProportionateScreenWidth(20)),
-                      child: Text("4 items",
+                      child: Text("${cartData.length} items",
                           style: TextStyle(
                               fontFamily: AppConfig.roboto,
                               color: Colors.white)),
@@ -283,7 +291,7 @@ class _CartState extends State<Cart> {
                       text: "Total:\n",
                       children: [
                         TextSpan(
-                          text: "\$337.15",
+                          text: "\$" + "${(cost * 100).round() / 100}",
                           style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
                       ],

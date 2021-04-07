@@ -344,12 +344,12 @@ class _ProductCarouselState extends State<ProductCarousel> {
                               EdgeInsets.only(left: 0, right: 0, bottom: 10),
                           child: Text(
                               "Size: " +
-                                  systemData[index].size[0].toString() +
+                                  systemData[index].size[0].toStringAsFixed(2) +
                                   " x " +
-                                  systemData[index].size[1].toString() +
+                                  systemData[index].size[1].toStringAsFixed(2) +
                                   " x " +
                                   systemData[index].size[2].toString() +
-                                  "cm \n \nPlant Pots: " +
+                                  "cm \n \nPlant Pots per level: " +
                                   systemData[index].pots.toString() +
                                   " \n \nType: " +
                                   systemData[index].type +
@@ -387,11 +387,13 @@ class _ProductCarouselState extends State<ProductCarousel> {
                               //         builder: (context) => ProductPage(
                               //               data: systemData[index],
                               //             )));
+                              SystemData selected = systemData[index];
+                              selected.size = widget.scannedData.dimensions;
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => BuyFlow(
-                                            system: systemData[index],
+                                            system: selected,
                                           )));
                             },
                           ),

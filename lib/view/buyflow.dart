@@ -1,4 +1,6 @@
 import 'package:grow_lah/model/system_data.dart';
+import 'package:grow_lah/view/cart.dart';
+import 'package:grow_lah/view/product_card.dart';
 
 import 'on_boarding.dart';
 import 'dart:math';
@@ -8,6 +10,8 @@ import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:liquid_swipe/liquid_swipe.dart';
 import 'package:grow_lah/model/buyFlowItem.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BuyFlow extends StatefulWidget {
   BuyFlow({Key key, this.system}) : super(key: key);
@@ -32,25 +36,19 @@ class _BuyFlowState extends State<BuyFlow> {
 
   final _kArrowColor = Colors.black.withOpacity(0.8);
 
-  List<BuyItem> produceItems = [
-    BuyItem("Lettuce", 2.75, 0),
-    BuyItem("Tomato", 2.75, 0),
-    BuyItem("Lettuce2", 2.75, 0),
-    BuyItem("Tomato2", 2.75, 0),
-    BuyItem("Lettuce3", 2.75, 0),
-    BuyItem("Tomato3", 2.75, 0)
-  ];
+  // List<BuyItem> produceItems = [
+  //   BuyItem("Lettuce", 0, 0),
+  //   BuyItem("Tomato", 0, 0),
+  //   BuyItem("Lettuce2", 0, 0),
+  //   BuyItem("Tomato2", 0, 0),
+  //   BuyItem("Lettuce3", 0, 0),
+  //   BuyItem("Tomato3", 0, 0)
+  // ];
+  List<SeedData> produceItems = SeedData.defaultData;
 
-  List<BuyItem> sensorItems = [
-    BuyItem("Light Sensor", 2.75, 0),
-    BuyItem("PH Sensor", 2.75, 0),
-    BuyItem("Temperature sensor", 2.75, 0),
-    BuyItem("Sensor3", 2.75, 0),
-    BuyItem("Sensor4", 2.75, 0),
-    BuyItem("Sensor5", 2.75, 0)
-  ];
+  List<SensorData> sensorItems = SensorData.defaultData;
 
-  List<BuyItem> summary = [];
+  List<ProductData> summary = [];
 
   bool light = false;
 
@@ -61,9 +59,29 @@ class _BuyFlowState extends State<BuyFlow> {
   @override
   void initState() {
     super.initState();
+    updateProducts();
     if (widget.system != null) {
       system = widget.system;
+      system.quantity = 1;
+      totalModules =
+          ((system.size[0] / 0.15).round() * (system.size[1] / 0.15).round());
+      print(system.size);
+      if (totalModules < 1) {
+        totalModules = 6;
+      }
     }
+  }
+
+  void updateProducts() async {
+    produceItems = await SeedData.getSeeds();
+    sensorItems = await SensorData.getSeeds();
+    for (SeedData produce in produceItems) {
+      produce.quantity = 0;
+    }
+    for (SensorData sensor in sensorItems) {
+      sensor.quantity = 0;
+    }
+    setState(() {});
   }
 
   @override
@@ -166,175 +184,334 @@ class _BuyFlowState extends State<BuyFlow> {
 
   Scaffold introSlides(int index) {
     if (index == 4) {
-      summary = [BuyItem(system.name, system.price, 1)];
+      summary = [system];
       if (light) {
-        summary.add(BuyItem("Light", 2.49, 1));
+        summary.add(SensorData("Light", "image.png", 2.49, "", quantity: 1));
       }
-      for (BuyItem produce in produceItems) {
-        if (produce.quantity > 1) {
+      for (ProductData produce in produceItems) {
+        print("produce");
+        print(produce);
+        if (produce.quantity >= 1) {
           summary.add(produce);
         }
       }
-      for (BuyItem sensor in sensorItems) {
+      for (SensorData sensor in sensorItems) {
         if (sensor.quantity == 1) {
           summary.add(sensor);
         }
       }
     }
     List<Widget> products = [];
-    for (BuyItem data in (index == 1)
+    for (ProductData data in (index == 1)
         ? produceItems
         : (index == 4)
             ? summary
             : sensorItems) {
-      Dismissible dismissible = Dismissible(
-          confirmDismiss: (direction) async {
-            return await showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: const Text("Confirm"),
-                  content:
-                      const Text("Are you sure you wish to delete this item?"),
-                  actions: <Widget>[
-                    FlatButton(
-                        onPressed: () => Navigator.of(context).pop(true),
-                        child: const Text("DELETE")),
-                    FlatButton(
-                      onPressed: () => Navigator.of(context).pop(false),
-                      child: const Text("CANCEL"),
-                    ),
-                  ],
-                );
-              },
-            );
-          },
-          child: horizontalProductCard(
-            data,
-            index,
-            EdgeInsets.all(10),
-          ),
-          key: Key(data.title),
-          direction: DismissDirection.endToStart,
-          onDismissed: (direction) async {
-            setState(() {
-              (index == 1)
-                  ? produceItems.remove(data)
-                  : sensorItems.remove(data);
-            });
-          },
-          background: Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            decoration: BoxDecoration(
-              color: Color(0xFFFFE6E6),
-              borderRadius: BorderRadius.circular(15),
-            ),
-            child: Row(
-              children: [
-                Spacer(),
-                Icon(Icons.delete, color: Colors.green),
-              ],
-            ),
-          ));
+      Widget dismissible = horizontalProductCard(
+        data,
+        index,
+        EdgeInsets.all(10),
+      );
       products.add(dismissible);
     }
     return Scaffold(
         backgroundColor: index % 2 == 0 ? Colors.green : Colors.white,
-        body: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: 50, bottom: 20),
-                        child: Text(
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(20),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(top: 50, bottom: 20),
+                            child: Text(
+                              index == 1
+                                  ? "Produce"
+                                  : index == 2
+                                      ? "Are you placing it Indoors or Outdoors?"
+                                      : index == 3
+                                          ? "Add-Ons"
+                                          : "Order Summary",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 32.0,
+                                  fontFamily: AppConfig.roboto,
+                                  fontWeight: FontWeight.bold,
+                                  color: index % 2 != 0
+                                      ? Colors.green
+                                      : Colors.white),
+                            ),
+                          ),
                           index == 1
-                              ? "Produce"
-                              : index == 2
-                                  ? "Are you placing it Indoors or Outdoors?"
-                                  : index == 3
-                                      ? "Add-Ons"
-                                      : "Order Summary",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 32.0,
-                              fontFamily: AppConfig.roboto,
-                              fontWeight: FontWeight.bold,
-                              color:
-                                  index % 2 != 0 ? Colors.green : Colors.white),
-                        ),
-                      ),
-                      index == 1
-                          ? Padding(
-                              padding: EdgeInsets.only(
-                                  left: 20, right: 20, bottom: 0),
-                              child: Text(
-                                  "You have space for $totalModules more produce modules",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontFamily: AppConfig.roboto,
-                                      fontWeight: FontWeight.w200,
-                                      color: index % 2 != 0
-                                          ? Colors.green
-                                          : Colors.white)))
-                          : Container(),
-                      Padding(
-                        padding:
-                            EdgeInsets.all(getProportionateScreenWidth(10)),
-                        child: Wrap(
-                          children: products,
-                          spacing: 10,
-                          runSpacing: 10,
-                          crossAxisAlignment: WrapCrossAlignment.end,
-                          alignment: WrapAlignment.center,
-                          runAlignment: WrapAlignment.end,
-                        ),
-                      ),
-                      (index == 4)
-                          ? Padding(
-                              child: GestureDetector(
-                                child: Neumorphic(
-                                  style: AppConfig.neuStyle.copyWith(
-                                      shadowLightColor: Colors.transparent,
-                                      color: Colors.white,
-                                      boxShape: NeumorphicBoxShape.roundRect(
-                                          BorderRadius.circular(15))),
-                                  padding: EdgeInsets.all(30),
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.all(0),
-                                        child: Text(
-                                          "Add to Cart",
-                                          style: TextStyle(
-                                            color: Colors.green,
-                                            fontSize: 20,
-                                            fontFamily: AppConfig.roboto,
-                                          ),
-                                        ),
-                                      )
-                                    ],
+                              ? Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 20, right: 20, bottom: 0),
+                                  child: Text(
+                                      "You have space for $totalModules more produce modules",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontFamily: AppConfig.roboto,
+                                          fontWeight: FontWeight.w200,
+                                          color: index % 2 != 0
+                                              ? Colors.green
+                                              : Colors.white)))
+                              : Container(),
+                          Padding(
+                            padding:
+                                EdgeInsets.all(getProportionateScreenWidth(10)),
+                            child: Wrap(
+                              children: products,
+                              spacing: 10,
+                              runSpacing: 10,
+                              crossAxisAlignment: WrapCrossAlignment.end,
+                              alignment: WrapAlignment.center,
+                              runAlignment: WrapAlignment.end,
+                            ),
+                          ),
+                          (index == 4)
+                              ? Padding(
+                                  child: GestureDetector(
+                                    child: Neumorphic(
+                                      style: AppConfig.neuStyle.copyWith(
+                                          shadowLightColor: Colors.transparent,
+                                          color: Colors.white,
+                                          boxShape:
+                                              NeumorphicBoxShape.roundRect(
+                                                  BorderRadius.circular(15))),
+                                      padding: EdgeInsets.all(30),
+                                      child: Row(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.all(0),
+                                            child: Text(
+                                              "Add to Cart",
+                                              style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 20,
+                                                fontFamily: AppConfig.roboto,
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      summary.remove(0);
+                                      if (light) {
+                                        summary.removeAt(0);
+                                        system.light = "Indoor";
+                                      } else {
+                                        system.light = "Outdoor";
+                                      }
+                                      String editedImage = system.image;
+                                      editedImage = editedImage.substring(83);
+                                      print(editedImage);
+                                      print(editedImage.indexOf("?"));
+                                      editedImage = editedImage.substring(
+                                          0, editedImage.indexOf("?"));
+                                      User user =
+                                          FirebaseAuth.instance.currentUser;
+                                      await FirebaseFirestore.instance
+                                          .collection("Users")
+                                          .doc(user.uid)
+                                          .update({
+                                        "Cart.Custom": FieldValue.arrayUnion([
+                                          {
+                                            "name": system.name,
+                                            "light": system.light,
+                                            "pots": system.pots,
+                                            "size": system.size,
+                                            "image": editedImage,
+                                            "price": system.price,
+                                            "qty": 1
+                                          }
+                                        ])
+                                      });
+                                      for (ProductData product in summary) {
+                                        print(product.name);
+                                        await FirebaseFirestore.instance
+                                            .collection("Users")
+                                            .doc(user.uid)
+                                            .update({
+                                          "Cart." + product.name:
+                                              FieldValue.increment(1),
+                                        });
+                                      }
+
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => Cart()));
+                                    },
                                   ),
-                                ),
-                                onTap: () {},
-                              ),
-                              padding: EdgeInsets.only(
-                                  top: 10, left: 20, right: 20, bottom: 10),
-                            )
-                          : Container()
-                    ],
+                                  padding: EdgeInsets.only(
+                                      top: 10, left: 20, right: 20, bottom: 10),
+                                )
+                              : Container()
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
+            ),
+            (index == 3)
+                ? Padding(
+                    padding: EdgeInsets.only(right: 20, top: 40),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            child: Neumorphic(
+                              style: AppConfig.neuStyle.copyWith(
+                                  shadowLightColor: Colors.transparent,
+                                  color: Colors.black,
+                                  boxShape: NeumorphicBoxShape.circle()),
+                              padding: EdgeInsets.all(10),
+                              child: Icon(
+                                Icons.help_outline,
+                                color: Colors.green,
+                                size: 30,
+                              ),
+                            ),
+                            onTap: () {
+                              print("Tapped");
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  List<Widget> sensors = [
+                                    Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Text("Add-Ons Help",
+                                            style: TextStyle(
+                                              fontSize:
+                                                  getProportionateScreenWidth(
+                                                      18),
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white,
+                                            ))),
+                                    Padding(
+                                      padding: EdgeInsets.all(10),
+                                      child: Text(
+                                        "Add-Ons allow you to use monitor features and track plant growth for the best possible outcome",
+                                        style: TextStyle(
+                                          fontSize:
+                                              getProportionateScreenWidth(14),
+                                          fontWeight: FontWeight.w200,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    )
+                                  ];
+                                  for (ProductData sensor in sensorItems) {
+                                    Widget card = Padding(
+                                        padding: EdgeInsets.all(10),
+                                        child: Neumorphic(
+                                            style: AppConfig.neuStyle.copyWith(
+                                                shadowLightColor:
+                                                    Colors.transparent,
+                                                color: Colors.transparent,
+                                                boxShape: NeumorphicBoxShape
+                                                    .roundRect(
+                                                        BorderRadius.circular(
+                                                            15))),
+                                            child: Container(
+                                                padding: EdgeInsets.all(
+                                                    getProportionateScreenWidth(
+                                                        20)),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green,
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                child: GestureDetector(
+                                                    onTap: () {},
+                                                    child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Text(
+                                                                  sensor.name,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        getProportionateScreenWidth(
+                                                                            18),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                  maxLines: 2,
+                                                                ),
+                                                                const SizedBox(
+                                                                    height: 10),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Text(
+                                                                      "Sensor Description",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .white,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                )
+                                                              ]),
+                                                          Row(
+                                                            children: [],
+                                                          )
+                                                        ])))));
+                                    sensors.add(card);
+                                  }
+                                  return Padding(
+                                      padding: EdgeInsets.all(40),
+                                      child: Neumorphic(
+                                        style: AppConfig.neuStyle.copyWith(
+                                            shadowLightColor:
+                                                Colors.transparent,
+                                            color: Colors.green,
+                                            boxShape:
+                                                NeumorphicBoxShape.roundRect(
+                                                    BorderRadius.circular(15))),
+                                        padding: EdgeInsets.all(20),
+                                        child: SingleChildScrollView(
+                                            child: Column(
+                                          children: sensors,
+                                        )),
+                                      ));
+                                },
+                              );
+                            },
+                          )
+                        ]))
+                : Container()
+          ],
         ));
   }
 
@@ -400,8 +577,15 @@ class _BuyFlowState extends State<BuyFlow> {
                       },
                     ),
                     padding: EdgeInsets.only(
-                        top: 10, left: 20, right: 20, bottom: 0),
-                  )
+                        top: 10, left: 20, right: 20, bottom: 30),
+                  ),
+                  Text(
+                      'If you are placing your system indoors, lack of sunlight may affect its growth without a light.',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: AppConfig.roboto,
+                      ))
                 ],
               ),
             ),
@@ -411,7 +595,7 @@ class _BuyFlowState extends State<BuyFlow> {
     );
   }
 
-  Widget horizontalProductCard(BuyItem product, indexIn, padding) {
+  Widget horizontalProductCard(ProductData product, indexIn, padding) {
     return Padding(
         padding: padding,
         child: SizedBox(
@@ -440,7 +624,7 @@ class _BuyFlowState extends State<BuyFlow> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              product.title,
+                              product.name,
                               style: TextStyle(color: Colors.white),
                               maxLines: 2,
                             ),
@@ -449,7 +633,9 @@ class _BuyFlowState extends State<BuyFlow> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "\$${product.price}",
+                                  (indexIn == 1)
+                                      ? "QTY:"
+                                      : "\$${product.price}",
                                   style: TextStyle(
                                     fontSize: getProportionateScreenWidth(18),
                                     fontWeight: FontWeight.w600,

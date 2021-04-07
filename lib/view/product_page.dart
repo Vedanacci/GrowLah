@@ -482,14 +482,16 @@ class _ProductPageState extends State<ProductPage> {
                             child: Stack(
                           alignment: Alignment.bottomRight,
                           children: [
-                            Hero(
-                              tag: "$index",
-                              child: cachedImage(
-                                product.image,
-                                height: size.height * 0.25,
-                                //width: size.height * 0.25,
-                              ),
-                            ),
+                            Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20)),
+                                child: Hero(
+                                    tag: "$index",
+                                    child: cachedImage(
+                                      product.image,
+                                      height: size.height * 0.25,
+                                      //width: size.height * 0.25,
+                                    ))),
                             (seedProduct != null)
                                 ? Positioned(
                                     right: -3,
