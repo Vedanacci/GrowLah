@@ -15,6 +15,8 @@ import 'package:grow_lah/view/buy_sell.dart';
 import 'package:grow_lah/view/chat_bot.dart';
 import 'package:grow_lah/view/communication_section.dart';
 import 'package:grow_lah/view/monitor_screen.dart';
+import 'package:grow_lah/view/notification.dart';
+import 'package:grow_lah/view/refer_earn.dart';
 import 'package:grow_lah/view/take_picture.dart';
 import 'package:grow_lah/view/video_screen.dart';
 import 'package:grow_lah/view/buy_home.dart';
@@ -72,6 +74,40 @@ class _HomeScreenState extends State<HomeScreen> {
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
+            actions: <Widget>[
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => ReferAndEarn()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  child: Image.asset(
+                    Assets.stock,
+                    color: Colors.white,
+                    height: 15.0,
+                    width: 15.0,
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => NotificationScreen()));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 10.0, right: 20.0),
+                  child: Image.asset(
+                    Assets.notification,
+                    color: Colors.white,
+                    height: 18.0,
+                    width: 18.0,
+                  ),
+                ),
+              )
+            ],
             centerTitle: true,
             backgroundColor: Colors.transparent,
             title: Text(

@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:grow_lah/view/ask_Refer.dart';
 
 class ReferAndEarn extends StatefulWidget {
   ReferAndEarn({Key key}) : super(key: key);
@@ -16,6 +18,7 @@ class ReferAndEarn extends StatefulWidget {
 
 class _ReferAndEarnState extends State<ReferAndEarn> {
   int isSelected = 0;
+  String phone;
 
   @override
   void initState() {
@@ -30,8 +33,10 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
+    User user = FirebaseAuth.instance.currentUser;
+    phone = user.phoneNumber;
     return Scaffold(
-      appBar: AppConfig.appBar('REFER AND EARN', context, true),
+      appBar: AppConfig.appBar('Points', context, true),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Column(
@@ -40,7 +45,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               children: <Widget>[
                 Column(
                   children: <Widget>[
-                    Container(height: 337.0, child: mainView()),
+                    Container(child: mainView()),
                     Container(
                       height: 20.0,
                     )
@@ -49,184 +54,33 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                 Positioned(bottom: 4.0, right: 180.0, child: shareIcon())
               ],
             ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Neumorphic(
-                    style: AppConfig.neuStyle
-                        .copyWith(boxShape: AppConfig.neuShape),
-                    child: Container(
-                      height: 54.0,
-                      width: 137.0,
-                      color: Colors.green,
-                      child: Center(
-                        child: Text(
-                          '60 Points',
-                          style: TextStyle(
-                              fontFamily: AppConfig.roboto,
-                              color: Colors.white),
-                        ),
+            GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Neumorphic(
+                  style:
+                      AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    color: Colors.green,
+                    child: Center(
+                      child: Text(
+                        'Redeem',
+                        style: TextStyle(
+                            fontFamily: AppConfig.roboto,
+                            color: Colors.white,
+                            fontSize: 36,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
-                  Neumorphic(
-                    style: AppConfig.neuStyle
-                        .copyWith(boxShape: AppConfig.neuShape),
-                    child: Container(
-                      height: 54.0,
-                      width: 137.0,
-                      color: Colors.green,
-                      child: Center(
-                        child: Text(
-                          'Redeem',
-                          style: TextStyle(
-                              fontFamily: AppConfig.roboto,
-                              color: Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isSelected = 1;
-                      });
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Center(
-                          child: Text(
-                            'My Rewards',
-                            style: TextStyle(
-                                color: isSelected == 1
-                                    ? Colors.green
-                                    : Colors.grey,
-                                fontFamily: AppConfig.roboto,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          height: 2.0,
-                          width: 5.0,
-                          color: isSelected == 1 ? Colors.green : Colors.grey,
-                        )
-                      ],
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isSelected = 2;
-                      });
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Center(
-                          child: Text(
-                            CommonStrings.myReferrals,
-                            style: TextStyle(
-                                color: isSelected == 2
-                                    ? Colors.green
-                                    : Colors.grey,
-                                fontFamily: AppConfig.roboto,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        Container(
-                          height: 2.0,
-                          width: 5.0,
-                          color: isSelected == 2 ? Colors.green : Colors.grey,
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Neumorphic(
-                    style: AppConfig.neuStyle
-                        .copyWith(boxShape: AppConfig.neuShape),
-                    child: Container(
-                      height: 119.0,
-                      width: 127.0,
-                      color: Colors.green,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                '40',
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.white),
-                              ),
-                              Text(
-                                CommonStrings.coins,
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          Image.asset(Assets.coin)
-                        ],
-                      ),
-                    ),
-                  ),
-                  Neumorphic(
-                    style: AppConfig.neuStyle
-                        .copyWith(boxShape: AppConfig.neuShape),
-                    child: Container(
-                      height: 119.0,
-                      width: 127.0,
-                      color: Colors.green,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: <Widget>[
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text(
-                                '40',
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.white),
-                              ),
-                              Text(
-                                CommonStrings.coins,
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.white),
-                              ),
-                            ],
-                          ),
-                          Image.asset(Assets.coin)
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => AskRefer()));
+              },
+            )
           ],
         ),
       ),
@@ -243,19 +97,52 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
         color: Colors.white,
         child: Column(
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(Assets.giftBox),
+            Neumorphic(
+              style: AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
+              child: Container(
+                height: 119.0,
+                width: 127.0,
+                color: Colors.green,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          '40',
+                          style: TextStyle(
+                              fontFamily: AppConfig.roboto,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 28),
+                        ),
+                        Text(
+                          CommonStrings.coins,
+                          style: TextStyle(
+                              fontFamily: AppConfig.roboto,
+                              color: Colors.white),
+                        ),
+                      ],
+                    ),
+                    Image.asset(Assets.coin)
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Image.asset(Assets.coinGreen),
-                ),
-              ],
+              ),
             ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: <Widget>[
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Image.asset(Assets.giftBox),
+            //     ),
+            //     Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: Image.asset(Assets.coinGreen),
+            //     ),
+            //   ],
+            // ),
             Padding(
               padding:
                   const EdgeInsets.only(left: 47.0, right: 47.0, top: 20.0),
@@ -272,7 +159,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(30.0),
+              padding: const EdgeInsets.only(top: 10, bottom: 50),
               child: Neumorphic(
                 style:
                     AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
@@ -296,7 +183,7 @@ class _ReferAndEarnState extends State<ReferAndEarn> {
                                   fontSize: 12.0),
                             ),
                             Text(
-                              'ABDHGJU123',
+                              phone,
                               style: TextStyle(
                                   fontFamily: AppConfig.roboto,
                                   color: Colors.green,

@@ -61,6 +61,8 @@ class _GardenMonitorState extends State<GardenMonitor>
 
   List<double> lightData = [79.0];
   List<double> phData = [7.0];
+  List<double> tempData = [27.0];
+  List<double> humidityData = [65.0];
 
   Future getSensorData() async {
     print("started");
@@ -86,6 +88,40 @@ class _GardenMonitorState extends State<GardenMonitor>
           print("Mounted");
           setState(() {
             lightData = [val];
+            animate(1);
+          });
+        }
+      });
+      databaseReference
+          .child("temp")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print("In temp");
+        print(snapshot.value);
+        var val = snapshot.value;
+        print("Val: $val");
+        if (val != tempData[0]) {
+          print("Mounted");
+          setState(() {
+            tempData = [val];
+            animate(1);
+          });
+        }
+      });
+      databaseReference
+          .child("humidity")
+          .child(count.toString())
+          .once()
+          .then((snapshot) {
+        print("In humidity");
+        print(snapshot.value);
+        var val = snapshot.value;
+        print("Val: $val");
+        if (val != humidityData[0]) {
+          print("Mounted");
+          setState(() {
+            humidityData = [val];
             animate(1);
           });
         }
@@ -485,7 +521,43 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(
-            _progress.value, 0, 100, (lightData == null) ? 0 : lightData[0])
+            _progress.value, 0, 100, (lightData == null) ? 0 : lightData[0]),
+        SizedBox(
+          height: 50,
+        ),
+        Container(
+          width: SizeConfig.screenWidth,
+          padding: EdgeInsets.only(left: 20, bottom: 20),
+          child: Text(
+            "Temperature (˚C) : ${(tempData == null) ? 'Error' : tempData[0]}",
+            textAlign: TextAlign.start,
+            style: GoogleFonts.varelaRound(
+              color: Colors.white,
+              fontSize: 24,
+              //decoration: TextDecoration.underline
+            ),
+          ),
+        ),
+        curvedProgress(_progress.value, 0, 50,
+            (tempData == null) ? 0 : tempData[0].toDouble()),
+        SizedBox(
+          height: 50,
+        ),
+        Container(
+          width: SizeConfig.screenWidth,
+          padding: EdgeInsets.only(left: 20, bottom: 20),
+          child: Text(
+            "Humidity (%) : ${(humidityData == null) ? 'Error' : humidityData[0]}",
+            textAlign: TextAlign.start,
+            style: GoogleFonts.varelaRound(
+              color: Colors.white,
+              fontSize: 24,
+              //decoration: TextDecoration.underline
+            ),
+          ),
+        ),
+        curvedProgress(_progress.value, 0, 100,
+            (humidityData == null) ? 0 : humidityData[0])
       ],
     );
   }

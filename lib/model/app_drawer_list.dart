@@ -9,7 +9,7 @@ class AppDrawerList {
       AppDrawerModel(2, CommonStrings.settings),
       AppDrawerModel(3, CommonStrings.myOrders),
       AppDrawerModel(4, CommonStrings.subscription),
-      AppDrawerModel(5, CommonStrings.referAndEarn),
+      AppDrawerModel(5, "Points"),
       AppDrawerModel(6, CommonStrings.logOut),
     ];
     return drawer;

@@ -182,6 +182,10 @@ class _BuyFlowState extends State<BuyFlow> {
     );
   }
 
+  Widget confirmSize() {
+    return Container();
+  }
+
   Scaffold introSlides(int index) {
     if (index == 4) {
       summary = [system];

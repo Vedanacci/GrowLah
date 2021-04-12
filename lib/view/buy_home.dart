@@ -126,35 +126,54 @@ class _BuyHomeState extends State<BuyHome> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Container(
-                        width: (SizeConfig.screenWidth - 60) / 2,
+                        width: (SizeConfig.screenWidth - 60),
                         child: GestureDetector(
                           child: Neumorphic(
-                            style: AppConfig.neuStyle
-                                .copyWith(color: Colors.green),
-                            padding: EdgeInsets.only(top: 30, bottom: 30),
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  'images/scan_spot.png',
-                                  color: Colors.white,
-                                  fit: BoxFit.fill,
-                                  height:
-                                      (SizeConfig.screenWidth - 50) / 4 - 40,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20),
-                                  child: Text(
-                                    "Smart Order",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: AppConfig.roboto,
+                              style: AppConfig.neuStyle
+                                  .copyWith(color: Colors.green),
+                              padding: EdgeInsets.only(
+                                  top: 30, bottom: 30, left: 20, right: 20),
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      children: [
+                                        Image.asset(
+                                          'images/scan_spot.png',
+                                          color: Colors.white,
+                                          fit: BoxFit.fill,
+                                          height:
+                                              (SizeConfig.screenWidth - 50) /
+                                                      4 -
+                                                  40,
+                                        ),
+                                        Padding(
+                                          padding: EdgeInsets.only(top: 20),
+                                          child: Text(
+                                            "Smart Order",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontFamily: AppConfig.roboto,
+                                            ),
+                                          ),
+                                        )
+                                      ],
                                     ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
+                                    SizedBox(width: 30),
+                                    Expanded(
+                                        // padding: EdgeInsets.all(20),
+                                        child: Text(
+                                            "Click here to scan for a smart system recommendation",
+                                            maxLines: 3,
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 12,
+                                              fontWeight: FontWeight.w200,
+                                              fontFamily: AppConfig.roboto,
+                                            )))
+                                  ])),
                           onTap: () {
                             Navigator.push(
                                 context,
@@ -169,42 +188,42 @@ class _BuyHomeState extends State<BuyHome> {
                           },
                         ),
                       ),
-                      Container(
-                        width: (SizeConfig.screenWidth - 60) / 2,
-                        child: GestureDetector(
-                          child: Neumorphic(
-                            style: AppConfig.neuStyle
-                                .copyWith(color: Colors.green),
-                            padding: EdgeInsets.only(top: 30, bottom: 30),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.add,
-                                  size: (SizeConfig.screenWidth - 50) / 4 - 40,
-                                  color: Colors.white,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(top: 20),
-                                  child: Text(
-                                    "Custom Order",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontFamily: AppConfig.roboto,
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => CustomOrder()));
-                          },
-                        ),
-                      )
+                      // Container(
+                      //   width: (SizeConfig.screenWidth - 60) / 2,
+                      //   child: GestureDetector(
+                      //     child: Neumorphic(
+                      //       style: AppConfig.neuStyle
+                      //           .copyWith(color: Colors.green),
+                      //       padding: EdgeInsets.only(top: 30, bottom: 30),
+                      //       child: Column(
+                      //         children: [
+                      //           Icon(
+                      //             Icons.add,
+                      //             size: (SizeConfig.screenWidth - 50) / 4 - 40,
+                      //             color: Colors.white,
+                      //           ),
+                      //           Padding(
+                      //             padding: EdgeInsets.only(top: 20),
+                      //             child: Text(
+                      //               "Custom Order",
+                      //               style: TextStyle(
+                      //                 color: Colors.white,
+                      //                 fontSize: 20,
+                      //                 fontFamily: AppConfig.roboto,
+                      //               ),
+                      //             ),
+                      //           )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     onTap: () {
+                      //       Navigator.push(
+                      //           context,
+                      //           MaterialPageRoute(
+                      //               builder: (context) => CustomOrder()));
+                      //     },
+                      //   ),
+                      // )
                     ]),
                 Padding(
                   padding: EdgeInsets.only(top: 30),
