@@ -10,7 +10,7 @@ class AppDrawerList {
       // AppDrawerModel(3, CommonStrings.myOrders),
       // AppDrawerModel(4, CommonStrings.subscription),
       // AppDrawerModel(5, "Points"),
-      AppDrawerModel(6, CommonStrings.logOut),
+      AppDrawerModel(0, CommonStrings.logOut),
     ];
     return drawer;
   }

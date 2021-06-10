@@ -81,16 +81,17 @@ class _HomeScreenState extends State<HomeScreen> {
     //   sound: true,
     // ));
 
-    // FirebaseMessaging().getToken().then((task) {
-    //   // Get new FCM registration token
-    //   print("CODE is: ");
-    //   print(task);
-    // }).catchError((error) {
-    //   print("messaging failed with");
-    //   print(error);
-    // }).whenComplete(() => print("done messaging"));
-
     FirebaseMessaging messaging = FirebaseMessaging.instance;
+
+    messaging.getToken().then((task) {
+      // Get new FCM registration token
+      print("CODE is: ");
+      print(task);
+    }).catchError((error) {
+      print("messaging failed with");
+      print(error);
+    }).whenComplete(() => print("done messaging"));
+
     NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
@@ -279,8 +280,10 @@ class _HomeScreenState extends State<HomeScreen> {
     SizeConfig.screenWidth = size.width;
     User user = FirebaseAuth.instance.currentUser;
     List<Options> updatedList = (user != null)
-        ? ((type != 2) ? optionsList : [optionsList[1]] + [optionsList[5]])
-        : [optionsList[0]] + optionsList.sublist(3);
+        ? optionsList.sublist(0, 2) + optionsList.sublist(4)
+        : [optionsList[0]] +
+            optionsList.sublist(
+                3); //((type != 2) ? optionsList : [optionsList[1]] + [optionsList[5]])
     return Container(
       child: GridView.builder(
           scrollDirection: Axis.vertical,
@@ -292,11 +295,15 @@ class _HomeScreenState extends State<HomeScreen> {
           itemBuilder: (context, index) {
             return GestureDetector(
               onTap: () {
+                print("tapped");
+                print(index);
+                print(index + 2 * (index / 2).floor());
                 user == null
                     ? itemSelected((index == 0) ? index : index + 2)
-                    : (type != 2)
-                        ? itemSelected(index)
-                        : itemSelected(index + 1 + 3 * (index));
+                    : itemSelected(index + 2 * (index / 2).floor());
+                // : (type != 2)
+                //     ? itemSelected(index)
+                //     : itemSelected(index + 1 + 3 * (index));
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),

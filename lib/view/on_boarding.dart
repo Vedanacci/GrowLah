@@ -121,7 +121,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                             await FirebaseFirestore.instance
                                 .collection("Users")
                                 .doc(user)
-                                .update({'type': selectedIndex});
+                                .update({'type': 2}); //selectedIndex
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
