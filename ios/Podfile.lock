@@ -222,9 +222,8 @@ PODS:
   - BoringSSL-GRPC/Interface (0.0.7)
   - camera (0.0.1):
     - Flutter
-  - cloud_firestore (0.14.1-3):
-    - Firebase/CoreOnly (~> 6.34.0)
-    - Firebase/Firestore (~> 6.34.0)
+  - cloud_firestore (0.16.0-1):
+    - Firebase/Firestore (= 6.34.0)
     - firebase_core
     - Flutter
   - Firebase/Analytics (6.34.0):
@@ -249,32 +248,27 @@ PODS:
   - Firebase/Storage (6.34.0):
     - Firebase/CoreOnly
     - FirebaseStorage (~> 3.9.1)
-  - firebase_analytics (6.0.2):
-    - Firebase/Analytics (~> 6.34.0)
-    - Firebase/CoreOnly (~> 6.34.0)
+  - firebase_analytics (7.0.1):
+    - Firebase/Analytics (= 6.34.0)
     - firebase_core
     - Flutter
-  - firebase_auth (0.18.1-2):
-    - Firebase/Auth (~> 6.34.0)
-    - Firebase/CoreOnly (~> 6.34.0)
+  - firebase_auth (0.20.1):
+    - Firebase/Auth (= 6.34.0)
     - firebase_core
     - Flutter
-  - firebase_core (0.5.2):
-    - Firebase/CoreOnly (~> 6.34.0)
+  - firebase_core (0.7.0):
+    - Firebase/CoreOnly (= 6.34.0)
     - Flutter
-  - firebase_database (4.3.0):
-    - Firebase/CoreOnly (~> 6.34.0)
-    - Firebase/Database (~> 6.34.0)
+  - firebase_database (6.0.0):
+    - Firebase/Database (= 6.34.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (7.0.3):
-    - Firebase/CoreOnly (~> 6.34.0)
-    - Firebase/Messaging (~> 6.34.0)
+  - firebase_messaging (8.0.0-dev.15):
+    - Firebase/Messaging (= 6.34.0)
     - firebase_core
     - Flutter
-  - firebase_storage (5.0.0-dev.3):
-    - Firebase/CoreOnly (~> 6.34.0)
-    - Firebase/Storage (~> 6.34.0)
+  - firebase_storage (7.0.0):
+    - Firebase/Storage (= 6.34.0)
     - firebase_core
     - Flutter
   - FirebaseAnalytics (6.9.0):
@@ -511,14 +505,14 @@ SPEC CHECKSUMS:
   arkit_plugin: 3e42571e8be84adabb8a178bd51c22fa981e16bd
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   camera: a0ca5080336f7af47b88436e5e26da3dee5568f0
-  cloud_firestore: 88649a1f5b2da586da2f202ab14d100ff3653767
+  cloud_firestore: 9fb5161e633025fcde4632c87cbdbcbcff9cb44b
   Firebase: c23a36d9e4cdf7877dfcba8dd0c58add66358999
-  firebase_analytics: 88ad232772f3cb9c97668724c356f6b380164f40
-  firebase_auth: bb9aafd9444cf453fae2194928a877bb2f7c46c7
-  firebase_core: ad1c8045ce943e61ba6b40eb878f24bb034795af
-  firebase_database: 5a87658edf33c27982411dbd87aab0b8174b70ee
-  firebase_messaging: 5b8b84e137fb670e1effa4fdb016e8e41730671f
-  firebase_storage: dbf82eca25e73dfbb43d20ec50e2aeb7ddf145ab
+  firebase_analytics: 3d20a4ba2e3d5cea765d23e583910d1b3ce23665
+  firebase_auth: 78e9356720e86c947d70710e91e2b8d7f83576c9
+  firebase_core: 36a9384501fbaf3d03d21a7af07de14e3101875f
+  firebase_database: 1fb1a5451787671bd0d8182a0f551ac3b5f7d580
+  firebase_messaging: 445b1c4075b9bd359e364dae0f581ede071238e0
+  firebase_storage: 74d8de34222153cee7881f45d7cdb3b2b92ccfd2
   FirebaseAnalytics: 3bb096873ee0d7fa4b6c70f5e9166b6da413cc7f
   FirebaseAuth: c92d49ada7948d1a23466e3db17bc4c2039dddc3
   FirebaseCore: d3a978a3cfa3240bf7e4ba7d137fdf5b22b628ec

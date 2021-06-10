@@ -387,6 +387,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
               //This callback would gets called when verification is done auto maticlly
             },
             verificationFailed: (FirebaseAuthException exception) {
+              print(exception);
               AppConfig.showToast("Error, Please try again");
             },
             codeSent: (String verificationId, [int forceResendingToken]) async {

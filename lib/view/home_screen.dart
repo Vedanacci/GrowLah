@@ -61,33 +61,62 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future getType() async {
-    print("getting type");
-    await FirebaseFirestore.instance
-        .collection("Users")
-        .doc(FirebaseAuth.instance.currentUser.uid)
-        .get()
-        .then((value) {
-      print("type is");
-      print(value['type']);
-      setState(() {
-        type = value['type'];
-      });
-    });
+    // print("getting type");
+    // await FirebaseFirestore.instance
+    //     .collection("Users")
+    //     .doc(FirebaseAuth.instance.currentUser.uid)
+    //     .get()
+    //     .then((value) {
+    //   print("type is");
+    //   print(value['type']);
+    //   setState(() {
+    //     type = value['type'];
+    //   });
+    // });
 
-    FirebaseMessaging messaging = FirebaseMessaging();
+    // FirebaseMessaging().requestNotificationPermissions(IosNotificationSettings(
+    //   alert: true,
+    //   badge: true,
+    //   provisional: true,
+    //   sound: true,
+    // ));
 
-    await messaging.requestNotificationPermissions(IosNotificationSettings(
+    // FirebaseMessaging().getToken().then((task) {
+    //   // Get new FCM registration token
+    //   print("CODE is: ");
+    //   print(task);
+    // }).catchError((error) {
+    //   print("messaging failed with");
+    //   print(error);
+    // }).whenComplete(() => print("done messaging"));
+
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission(
       alert: true,
+      announcement: false,
       badge: true,
+      carPlay: false,
+      criticalAlert: false,
       provisional: false,
       sound: true,
-    ));
+    );
+
+    print('User granted permission: ${settings.authorizationStatus}');
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Got a message whilst in the foreground!');
+      print('Message data: ${message.data}');
+
+      if (message.notification != null) {
+        print('Message also contained a notification: ${message.notification}');
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     print(FirebaseAuth.instance.currentUser);
+    getType();
     return Stack(
       children: <Widget>[
         AppConfig.bgWave(context),

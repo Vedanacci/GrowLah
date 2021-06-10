@@ -93,7 +93,7 @@ class _AppDrawerState extends State<AppDrawer> {
                           builder: (context) => PostAdScreen());
 
                       switch (index) {
-                        case 0:
+                        case 6:
                           moveToNext(route0);
                           break;
                         case 1:
@@ -111,7 +111,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         case 5:
                           moveToNext(route5);
                           break;
-                        case 6:
+                        case 0:
                           {
                             print("Signing out");
                             Navigator.pushReplacement(
