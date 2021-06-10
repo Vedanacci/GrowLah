@@ -26,6 +26,8 @@ import 'my_orders.dart';
 import 'ar_view.dart';
 import 'ar_ios_view.dart';
 import 'buttonexpand.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -40,6 +42,8 @@ List<Options> optionsList = List<dynamic>();
 List<AppDrawerModel> drawerList = List<AppDrawerModel>();
 
 class _HomeScreenState extends State<HomeScreen> {
+  var type = 0;
+
   @override
   void initState() {
     optionsList = OptionsList.optionList();
@@ -47,13 +51,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
     print(optionsList);
     print(drawerList);
-
+    getType();
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future getType() async {
+    print("getting type");
+    await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      print("type is");
+      print(value['type']);
+      setState(() {
+        type = value['type'];
+      });
+    });
+
+    FirebaseMessaging messaging = FirebaseMessaging();
+
+    await messaging.requestNotificationPermissions(IosNotificationSettings(
+      alert: true,
+      badge: true,
+      provisional: false,
+      sound: true,
+    ));
   }
 
   @override
@@ -221,8 +249,9 @@ class _HomeScreenState extends State<HomeScreen> {
     SizeConfig.screenHeight = size.height;
     SizeConfig.screenWidth = size.width;
     User user = FirebaseAuth.instance.currentUser;
-    List<Options> updatedList =
-        user != null ? optionsList : [optionsList[0]] + optionsList.sublist(3);
+    List<Options> updatedList = (user != null)
+        ? ((type != 2) ? optionsList : [optionsList[1]] + [optionsList[5]])
+        : [optionsList[0]] + optionsList.sublist(3);
     return Container(
       child: GridView.builder(
           scrollDirection: Axis.vertical,
@@ -236,7 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () {
                 user == null
                     ? itemSelected((index == 0) ? index : index + 2)
-                    : itemSelected(index);
+                    : (type != 2)
+                        ? itemSelected(index)
+                        : itemSelected(index + 1 + 3 * (index));
               },
               child: Padding(
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0),

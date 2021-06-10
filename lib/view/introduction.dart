@@ -154,7 +154,10 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Image.asset("images/onboarding" + index.toString() + ".png"),
+                  Image.asset(
+                    "images/onboarding" + index.toString() + ".png",
+                    height: 200,
+                  ),
                   Padding(
                     padding: EdgeInsets.only(top: 50, bottom: 50),
                     child: Text(

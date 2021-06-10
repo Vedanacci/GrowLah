@@ -26,15 +26,16 @@ class Garden {
   String name;
   String image;
   String system;
+  String path;
 
   static List potNames = ["Balcony 1", "Balcony 2", "Yard System"];
   static List<Garden> defaultData = [
-    Garden(potNames[0], 'image.png', 'System Pro'),
-    Garden(potNames[1], 'image.png', 'System Pro'),
-    Garden(potNames[2], 'image.png', 'System Pro')
+    Garden(potNames[0], 'image.png', 'System Pro', 'vedantbahadur'),
+    Garden(potNames[1], 'image.png', 'System Pro', 'vedantbahadur'),
+    Garden(potNames[2], 'image.png', 'System Pro', 'vedantbahadur')
   ];
 
-  Garden(this.name, this.image, this.system);
+  Garden(this.name, this.image, this.system, this.path);
 
   static Future<List<Garden>> getGardens() async {
     List<Garden> gardenList = [];
@@ -54,7 +55,8 @@ class Garden {
         String urlImage = await FirebaseStorage.instance
             .ref("/Products/" + image)
             .getDownloadURL();
-        Garden gardenData = Garden(data["name"], urlImage, data["system"]);
+        Garden gardenData =
+            Garden(data["name"], urlImage, data["system"], data["path"]);
         gardenList.add(gardenData);
       });
     });

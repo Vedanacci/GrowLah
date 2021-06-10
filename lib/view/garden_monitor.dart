@@ -67,7 +67,7 @@ class _GardenMonitorState extends State<GardenMonitor>
   Future getSensorData() async {
     print("started");
     final databaseReference =
-        FirebaseDatabase.instance.reference().child("vedantbahadur");
+        FirebaseDatabase.instance.reference().child(widget.garden.path);
 
     StreamSubscription<Event> subscription =
         databaseReference.onValue.listen((event) {

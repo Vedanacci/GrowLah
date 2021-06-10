@@ -25,7 +25,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     print("Loaded");
-    Future.delayed(const Duration(seconds: 1), () async {
+    Future.delayed(const Duration(seconds: 10), () async {
       loginNeeded
           ? Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => AuthenticationScreen()))
@@ -50,7 +50,7 @@ class _SplashScreenState extends State<SplashScreen> {
         children: <Widget>[
           Padding(
             padding:
-                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.4),
+                EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.3),
             child: Center(child: Image.asset(Assets.appLogo)),
           ),
           Padding(
@@ -83,6 +83,14 @@ class _SplashScreenState extends State<SplashScreen> {
                 fontWeight: FontWeight.bold),
           ),
           Image.asset(Assets.bottomLogo),
+          Text(
+            "Vedant Bahadur and Aman Garg",
+            style: new TextStyle(
+                fontFamily: AppConfig.roboto,
+                fontSize: 12.0,
+                color: Colors.white,
+                fontWeight: FontWeight.bold),
+          ),
         ],
       ),
     );

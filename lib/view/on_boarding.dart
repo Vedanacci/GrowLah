@@ -5,6 +5,8 @@ import 'package:grow_lah/model/on_boarding_model.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/view/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   OnBoardingScreen({Key key}) : super(key: key);
@@ -114,7 +116,12 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
 
                   isSelected
                       ? GestureDetector(
-                          onTap: () {
+                          onTap: () async {
+                            var user = FirebaseAuth.instance.currentUser.uid;
+                            await FirebaseFirestore.instance
+                                .collection("Users")
+                                .doc(user)
+                                .update({'type': selectedIndex});
                             Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
