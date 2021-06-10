@@ -18,7 +18,7 @@ class PostAdScreen extends StatefulWidget {
 
 class _PostAdScreenState extends State<PostAdScreen> {
   String imagePath = '';
-  File imageFile;
+  PickedFile imageFile;
   bool categorySelected = false;
   PostAdController controller = PostAdController();
   @override
@@ -320,7 +320,7 @@ class _PostAdScreenState extends State<PostAdScreen> {
                       height: 150.0,
                       width: 150.0,
                       child: Image.file(
-                        imageFile,
+                        File(imageFile.path),
                         fit: BoxFit.cover,
                       ))
                   : Icon(
@@ -406,7 +406,7 @@ class _PostAdScreenState extends State<PostAdScreen> {
   }
 
   openCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = image;
     });
@@ -414,7 +414,7 @@ class _PostAdScreenState extends State<PostAdScreen> {
   }
 
   openGallery() async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var picture = await ImagePicker().getImage(source: ImageSource.gallery);
     this.setState(() {
       imageFile = picture;
     });

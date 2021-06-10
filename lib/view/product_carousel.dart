@@ -128,7 +128,7 @@ class _ProductCarouselState extends State<ProductCarousel> {
           children: [
             CarouselSlider.builder(
                 itemCount: systemData.length,
-                itemBuilder: (context, index) {
+                itemBuilder: (context, index, heroIndex) {
                   if (systemData[0] == SystemData.empty && index == 0) {
                     return noMatches();
                   }

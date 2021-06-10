@@ -30,7 +30,7 @@ class _MyProfileState extends State<MyProfile> {
   List cameras;
   int selectedCameraIdx;
   String imagePath = '';
-  File imageFile;
+  PickedFile imageFile;
   List<dynamic> myList = List();
   UserModel user = UserModel("id", "name", "email", "phoneNumber");
 
@@ -56,7 +56,9 @@ class _MyProfileState extends State<MyProfile> {
 
   void loadImage() async {
     String urlImage = await FirebaseStorage.instance
-        .ref("/Users/" + user.id + ".jpg")
+        .ref()
+        .child("Users")
+        .child(user.id + ".jpg")
         .getDownloadURL();
     setState(() {
       imagePath = urlImage;
@@ -188,16 +190,16 @@ class _MyProfileState extends State<MyProfile> {
         });
   }
 
-  void updateImage(File image) {
+  void updateImage(PickedFile image) {
+    var image2 = File(image.path);
     var imageRef = FirebaseStorage.instance.ref().child("Users/${user.id}.jpg");
-    imageRef.putFile(image).then((snapshot) {
-      print("Uploaded profile photo");
-      loadImage();
-    });
+    imageRef.putFile(image2);
+    print("Uploaded profile photo");
+    loadImage();
   }
 
   openCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = image;
     });
@@ -206,7 +208,7 @@ class _MyProfileState extends State<MyProfile> {
   }
 
   openGallery() async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var picture = await ImagePicker().getImage(source: ImageSource.gallery);
     this.setState(() {
       imageFile = picture;
     });

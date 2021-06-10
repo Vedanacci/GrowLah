@@ -282,10 +282,17 @@ class _DetailCommunicationState extends State<DetailCommunication> {
     List updatedImages = [];
     for (var image in imagesIn) {
       if (image != null) {
-        Reference ref = FirebaseStorage.instance
-            .ref(type == 1 ? "/Products/" + image : "/News/" + image);
-        String link = await ref.getDownloadURL();
-        updatedImages.add(link);
+        if (type == 1) {
+          Reference ref =
+              FirebaseStorage.instance.ref().child("Products").child(image);
+          String link = await ref.getDownloadURL();
+          updatedImages.add(link);
+        } else {
+          Reference ref =
+              FirebaseStorage.instance.ref().child("News").child(image);
+          String link = await ref.getDownloadURL();
+          updatedImages.add(link);
+        }
       } else {
         print("image null");
         updatedImages.add(null);

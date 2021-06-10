@@ -19,7 +19,7 @@ class ChatBot extends StatefulWidget {
 
 class _ChatBotState extends State<ChatBot> {
   TextEditingController textEditingController = TextEditingController();
-  File imageFile;
+  PickedFile imageFile;
   int length = 0;
   List<Messages> messageList = List<Messages>();
   @override
@@ -36,7 +36,7 @@ class _ChatBotState extends State<ChatBot> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-        resizeToAvoidBottomPadding: true,
+        resizeToAvoidBottomInset: true,
         appBar: AppConfig.appBar(CommonStrings.chatBot, context, true),
         body: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -152,7 +152,7 @@ class _ChatBotState extends State<ChatBot> {
   }
 
   openCamera() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+    var image = await ImagePicker().getImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = image;
     });
@@ -160,7 +160,7 @@ class _ChatBotState extends State<ChatBot> {
   }
 
   openGallery() async {
-    var picture = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var picture = await ImagePicker().getImage(source: ImageSource.gallery);
     this.setState(() {
       imageFile = picture;
     });

@@ -40,9 +40,10 @@ class UserModel {
   createProfilePhoto() async {
     var imageRef = FirebaseStorage.instance.ref().child("Users/$id.jpg");
     File image = await imageToFile(imageName: "profile", ext: "jpeg");
-    imageRef.putFile(image).then((snapshot) {
-      print("Uploaded profile photo");
-    });
+    imageRef.putFile(image);
+    // .then((snapshot) {
+    //   print("Uploaded profile photo");
+    // });
   }
 }
 

@@ -53,7 +53,9 @@ class Garden {
         print(data);
         String image = data["image"];
         String urlImage = await FirebaseStorage.instance
-            .ref("/Products/" + image)
+            .ref()
+            .child("Products")
+            .child(image)
             .getDownloadURL();
         Garden gardenData =
             Garden(data["name"], urlImage, data["system"], data["path"]);
@@ -187,7 +189,7 @@ class _GardenScreenState extends State<GardenScreen> {
                           ))
                       : CarouselSlider.builder(
                           itemCount: gardens.length,
-                          itemBuilder: (context, index) {
+                          itemBuilder: (context, index, heroIndex) {
                             return GestureDetector(
                                 onTap: () {
                                   Navigator.push(

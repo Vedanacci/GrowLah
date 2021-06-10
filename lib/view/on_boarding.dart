@@ -117,7 +117,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   isSelected
                       ? GestureDetector(
                           onTap: () async {
-                            var user = FirebaseAuth.instance.currentUser.uid;
+                            String user = FirebaseAuth.instance.currentUser.uid;
                             await FirebaseFirestore.instance
                                 .collection("Users")
                                 .doc(user)

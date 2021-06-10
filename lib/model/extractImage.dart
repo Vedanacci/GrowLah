@@ -14,7 +14,8 @@ Future<String> extractImage(DocumentReference ref, String folder) async {
     imageName = data["image"].toString();
     print(imageName);
   });
-  Reference imageRef = FirebaseStorage.instance.ref("/$folder/" + imageName);
+  Reference imageRef =
+      FirebaseStorage.instance.ref().child(folder).child(imageName);
   String link = await imageRef.getDownloadURL();
   print(link);
   return link;

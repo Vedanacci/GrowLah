@@ -49,7 +49,9 @@ class SensorData extends ProductData {
         print(data);
         String image = data["image"];
         String urlImage = await FirebaseStorage.instance
-            .ref("/Products/" + image)
+            .ref()
+            .child("Products")
+            .child(image)
             .getDownloadURL();
         SensorData sensorData = SensorData(
           data["name"],
@@ -122,11 +124,15 @@ class SeedData extends ProductData {
         print(data);
         String image = data["image"];
         String urlImage = await FirebaseStorage.instance
-            .ref("/Products/" + image)
+            .ref()
+            .child("Products")
+            .child(image)
             .getDownloadURL();
         String plantimage = data["plantImage"];
         String urlPlant = await FirebaseStorage.instance
-            .ref("/Produce/" + plantimage)
+            .ref()
+            .child("Produce")
+            .child(plantimage)
             .getDownloadURL();
         SeedData nutrientData = SeedData(data["name"], urlImage, size,
             data["price"].toDouble(), data["description"], urlPlant);
@@ -195,7 +201,9 @@ class NutrientData extends ProductData {
         print(data);
         String image = data["image"];
         String urlImage = await FirebaseStorage.instance
-            .ref("/Products/" + image)
+            .ref()
+            .child("Products")
+            .child(image)
             .getDownloadURL();
         NutrientData nutrientData = NutrientData(data["name"], urlImage, size,
             data["price"].toDouble(), data["description"]);
@@ -269,7 +277,9 @@ class SystemData extends ProductData {
         List<String> sensors = List<String>.from(data["sensors"]);
         String image = data["image"];
         String urlImage = await FirebaseStorage.instance
-            .ref("/Products/" + image)
+            .ref()
+            .child("Products")
+            .child(image)
             .getDownloadURL();
         print(data);
         print("DownloadURL");
@@ -368,7 +378,9 @@ class CartData {
             product.name = listItem["name"];
             product.image = listItem['image'];
             product.image = await FirebaseStorage.instance
-                .ref("/Products/" + product.image)
+                .ref()
+                .child("Products")
+                .child(product.image)
                 .getDownloadURL();
             product.quantity = listItem['qty'];
             product.price = listItem['price'].toDouble();

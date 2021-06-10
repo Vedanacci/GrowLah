@@ -2,7 +2,6 @@ import 'dart:math';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
-import 'package:camera/new/camera.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:collection/collection.dart';

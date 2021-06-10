@@ -164,7 +164,8 @@ class _TakePictureState extends State<TakePicture> {
       final path =
           (await getTemporaryDirectory()).path + '${DateTime.now()}.png';
       // 2
-      await controller.takePicture(path);
+      XFile picture = await controller.takePicture();
+      picture.saveTo(path);
       // 3
       Navigator.push(
         context,
@@ -178,7 +179,7 @@ class _TakePictureState extends State<TakePicture> {
   }
 
   void uploadImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+    var image = await ImagePicker().getImage(source: ImageSource.gallery);
     if (image == null) {
       AppConfig.showToast("Unable to load Image");
       return;
