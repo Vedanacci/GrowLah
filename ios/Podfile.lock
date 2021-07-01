@@ -429,6 +429,8 @@ PODS:
   - tflite_flutter (0.1.0):
     - Flutter
   - Toast (4.0.0)
+  - url_launcher (0.0.1):
+    - Flutter
   - video_player (0.0.1):
     - Flutter
   - wakelock (0.0.1):
@@ -451,6 +453,7 @@ DEPENDENCIES:
   - sms_autofill (from `.symlinks/plugins/sms_autofill/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - tflite_flutter (from `.symlinks/plugins/tflite_flutter/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
   - wakelock (from `.symlinks/plugins/wakelock/ios`)
 
@@ -513,6 +516,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/sqflite/ios"
   tflite_flutter:
     :path: ".symlinks/plugins/tflite_flutter/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
   wakelock:
@@ -558,6 +563,7 @@ SPEC CHECKSUMS:
   sqflite: 6d358c025f5b867b29ed92fc697fd34924e11904
   tflite_flutter: 9157a660578930a99728974f247369af1c3595d5
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
+  url_launcher: 6fef411d543ceb26efce54b05a0a40bfd74cbbef
   video_player: 9cc823b1d9da7e8427ee591e8438bfbcde500e6e
   wakelock: d0fc7c864128eac40eba1617cb5264d9c940b46f
 

@@ -28,6 +28,8 @@ import 'ar_ios_view.dart';
 import 'buttonexpand.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:grow_lah/utils/setUpContact.dart';
 
 class HomeScreen extends StatefulWidget {
   HomeScreen({Key key}) : super(key: key);
@@ -43,7 +45,8 @@ List<AppDrawerModel> drawerList = List<AppDrawerModel>();
 
 class _HomeScreenState extends State<HomeScreen> {
   var type = 0;
-
+  final CallsAndMessagesService _service = locator<CallsAndMessagesService>();
+  List<String> details = ["nothing"];
   @override
   void initState() {
     optionsList = OptionsList.optionList();
@@ -61,6 +64,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future getType() async {
+    print("Running get");
     // print("getting type");
     // await FirebaseFirestore.instance
     //     .collection("Users")
@@ -80,6 +84,30 @@ class _HomeScreenState extends State<HomeScreen> {
     //   provisional: true,
     //   sound: true,
     // ));
+    print(details);
+    if (details.length != 3) {
+      print("Running get details");
+      FirebaseFirestore.instance
+          .collection("Constants")
+          .doc("contact details")
+          .get()
+          .then((value) {
+        print("IS");
+        print(value.data());
+        var data = value.data();
+        setState(() {
+          details = [
+            value["email"].toString(),
+            value["phone"].toString(),
+            value["sms"].toString()
+          ];
+        });
+      }).onError((error, stackTrace) {
+        print(error);
+      });
+    } else {
+      print("Not running");
+    }
 
     FirebaseMessaging messaging = FirebaseMessaging.instance;
 
@@ -233,10 +261,113 @@ class _HomeScreenState extends State<HomeScreen> {
                     padding: const EdgeInsets.only(bottom: 8.0, top: 40),
                     child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ARAndroid()));
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return Dialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(40)),
+                                  elevation: 16,
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: <Widget>[
+                                        Padding(
+                                          child: GestureDetector(
+                                              child: Neumorphic(
+                                                style: AppConfig.neuStyle
+                                                    .copyWith(
+                                                        color: Colors.green),
+                                                padding: EdgeInsets.all(30),
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(0),
+                                                      child: Text(
+                                                        "Call ${details[1]}",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              AppConfig.roboto,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              onTap: () =>
+                                                  _service.call(details[1])),
+                                          padding: EdgeInsets.only(
+                                              top: 30, left: 20, right: 20),
+                                        ),
+                                        Padding(
+                                          child: GestureDetector(
+                                              child: Neumorphic(
+                                                style: AppConfig.neuStyle
+                                                    .copyWith(
+                                                        color: Colors.green),
+                                                padding: EdgeInsets.all(30),
+                                                child: Row(
+                                                  children: [
+                                                    Padding(
+                                                      padding:
+                                                          EdgeInsets.all(0),
+                                                      child: Text(
+                                                        "Message ${details[2]}",
+                                                        style: TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 20,
+                                                          fontFamily:
+                                                              AppConfig.roboto,
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                              onTap: () =>
+                                                  _service.sendSms(details[2])),
+                                          padding: EdgeInsets.only(
+                                              top: 30, left: 20, right: 20),
+                                        ),
+                                        Padding(
+                                          child: GestureDetector(
+                                              child: Neumorphic(
+                                                style: AppConfig.neuStyle
+                                                    .copyWith(
+                                                        color: Colors.green),
+                                                padding: EdgeInsets.all(30),
+                                                child: Text(
+                                                  "Email ${details[0]}",
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 20,
+                                                    fontFamily:
+                                                        AppConfig.roboto,
+                                                  ),
+                                                ),
+                                              ),
+                                              onTap: () => _service
+                                                  .sendEmail(details[0])),
+                                          padding: EdgeInsets.only(
+                                              top: 30, left: 20, right: 20),
+                                        ),
+                                        SizedBox(
+                                          height: 20,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              });
+                          // Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => ARAndroid()));
                         },
                         child: Center(child: bottomIcon())),
                   )
@@ -395,4 +526,10 @@ class _HomeScreenState extends State<HomeScreen> {
         break;
     }
   }
+}
+
+class CallsAndMessagesService {
+  void call(String number) => launch("tel:$number");
+  void sendSms(String number) => launch("sms:$number");
+  void sendEmail(String email) => launch("mailto:$email");
 }

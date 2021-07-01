@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:grow_lah/view/home_screen.dart';
 import 'package:grow_lah/view/splash_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:get_it/get_it.dart';
+import 'package:grow_lah/utils/setUpContact.dart';
 
 bool loginNeeded = false;
 
@@ -37,6 +41,7 @@ void main() async {
     loginNeeded = true;
   }
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  setupLocator();
   runApp(MyApp());
 }
 

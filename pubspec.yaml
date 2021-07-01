@@ -54,6 +54,8 @@ dependencies:
   google_fonts:
   sms_autofill: #^1.2.6
   json_to_form: #"^0.0.1"
+  url_launcher:
+  get_it:
 
 dev_dependencies:
   flutter_test:

@@ -283,6 +283,7 @@
 				"${BUILT_PRODUCTS_DIR}/sms_autofill/sms_autofill.framework",
 				"${BUILT_PRODUCTS_DIR}/sqflite/sqflite.framework",
 				"${BUILT_PRODUCTS_DIR}/tflite_flutter/tflite_flutter.framework",
+				"${BUILT_PRODUCTS_DIR}/url_launcher/url_launcher.framework",
 				"${BUILT_PRODUCTS_DIR}/video_player/video_player.framework",
 				"${BUILT_PRODUCTS_DIR}/wakelock/wakelock.framework",
 			);
@@ -316,6 +317,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/sms_autofill.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/sqflite.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/tflite_flutter.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/url_launcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/video_player.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/wakelock.framework",
 			);
