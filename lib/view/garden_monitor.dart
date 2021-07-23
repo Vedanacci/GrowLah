@@ -338,7 +338,9 @@ class _GardenMonitorState extends State<GardenMonitor>
         child: FloatingActionButton(
           backgroundColor: _buttonColor.value,
           heroTag: 'Refresh',
-          onPressed: () {},
+          onPressed: () {
+            getSensorData();
+          },
           tooltip: 'Refresh',
           child: Icon(Icons.refresh, color: Colors.green),
         ),

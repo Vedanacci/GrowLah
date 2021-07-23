@@ -9,6 +9,7 @@ import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/view/article.dart';
+import 'package:grow_lah/view/createpost.dart';
 import 'package:grow_lah/view/feeds_detail_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -46,140 +47,153 @@ class _DetailCommunicationState extends State<DetailCommunication> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
-      appBar: AppConfig.appBar(CommonStrings.newsFeed1, context, true),
-      body: ListView.builder(
-        scrollDirection: Axis.vertical,
-        physics: ScrollPhysics(parent: ScrollPhysics()),
-        shrinkWrap: true,
-        itemCount: feedsList.length,
-        itemBuilder: (context, index) {
-          if ((index == 0) && (feedsList.length < 5)) {
-            return Image.network(
-              "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
-              height: 100,
-              color: Colors.green,
-            );
-          }
-          return InkWell(
-            onTap: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          // FeedsDetail(
-                          //       feedsModel: feedsList[index],
-                          //     )
-                          Article(
-                            feedsModel: feedsList[index],
-                          )));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  //  Padding(padding: const  EdgeInsets.only(left: 10.0),
-                  //  child: FeedsUtils.getTopView(feedsList[index])),
-                  // Padding(padding: const EdgeInsets.only(left: 10.0,right: 10.0),
-                  // child:   AppConfig.divider(),),
-                  //   Padding(padding: const EdgeInsets.all(20.0),
-                  //   child:   FeedsUtils.getCenterView(feedsList[index])),
-                  //   Padding(padding: const EdgeInsets.only(left: 10.0,right: 10.0),
-                  //     child:   AppConfig.divider(),),
-                  //   getBottomView(feedsList[index]),
-                  //   Container(
-                  //     height:3.0,color: Colors.black12,)
-                  Neumorphic(
-                    style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.all(Radius.circular(10.0)))),
-                    child: Container(
-                      height: 118.0,
-                      width: 374.0,
-                      color: Colors.white,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: Neumorphic(
-                                style: NeumorphicStyle(
-                                    boxShape: NeumorphicBoxShape.roundRect(
-                                        BorderRadius.all(
-                                            Radius.circular(10.0)))),
-                                child: Container(
-                                    height: 94.5,
-                                    width: 92.71,
-                                    child: (images.length != 0 &&
-                                            images[index] != null)
-                                        ?
-                                        // ? FadeInImage(
-                                        //     fit: BoxFit.fill,
-                                        //     image: CachedNetworkImageProvider(
-                                        //       images[index],
-                                        //       //scale: 1,
-                                        //     ),
-                                        //     placeholder:
-                                        //         CachedNetworkImageProvider(
-                                        //       "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
-                                        //     ))
-
-                                        CachedNetworkImage(
-                                            imageUrl: images[index]
-                                                    .startsWith("https://")
-                                                ? images[index]
-                                                : "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
-                                            fit: BoxFit.fill,
-                                            placeholder: (context, url) {
-                                              return RefreshProgressIndicator(
-                                                valueColor:
-                                                    AlwaysStoppedAnimation<
-                                                        Color>(Colors.green),
-                                              );
-                                            },
-                                          )
-
-                                        // ? Image.network(
-                                        //     images[index],
-                                        //     fit: BoxFit.fill,
-                                        //   )
-                                        : Icon(Icons.error))),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+        appBar: AppConfig.appBar(CommonStrings.newsFeed1, context, true),
+        body: Stack(children: [
+          ListView.builder(
+            scrollDirection: Axis.vertical,
+            physics: ScrollPhysics(parent: ScrollPhysics()),
+            shrinkWrap: true,
+            itemCount: feedsList.length,
+            itemBuilder: (context, index) {
+              if ((index == 0) && (feedsList.length < 5)) {
+                return Image.network(
+                  "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+                  height: 100,
+                  color: Colors.green,
+                );
+              }
+              return InkWell(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              // FeedsDetail(
+                              //       feedsModel: feedsList[index],
+                              //     )
+                              Article(
+                                feedsModel: feedsList[index],
+                              )));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      //  Padding(padding: const  EdgeInsets.only(left: 10.0),
+                      //  child: FeedsUtils.getTopView(feedsList[index])),
+                      // Padding(padding: const EdgeInsets.only(left: 10.0,right: 10.0),
+                      // child:   AppConfig.divider(),),
+                      //   Padding(padding: const EdgeInsets.all(20.0),
+                      //   child:   FeedsUtils.getCenterView(feedsList[index])),
+                      //   Padding(padding: const EdgeInsets.only(left: 10.0,right: 10.0),
+                      //     child:   AppConfig.divider(),),
+                      //   getBottomView(feedsList[index]),
+                      //   Container(
+                      //     height:3.0,color: Colors.black12,)
+                      Neumorphic(
+                        style: NeumorphicStyle(
+                            boxShape: NeumorphicBoxShape.roundRect(
+                                BorderRadius.all(Radius.circular(10.0)))),
+                        child: Container(
+                          height: 118.0,
+                          width: 374.0,
+                          color: Colors.white,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Container(
-                                width: SizeConfig.screenWidth - 16 - 92.71 - 48,
-                                padding: const EdgeInsets.only(
-                                    top: 32.0, bottom: 11.0, right: 0),
-                                child: Text(
-                                  feedsList[index].title,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 3,
-                                  style: TextStyle(
-                                      fontFamily: AppConfig.roboto,
-                                      color: Colors.green),
-                                ),
+                              Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Neumorphic(
+                                    style: NeumorphicStyle(
+                                        boxShape: NeumorphicBoxShape.roundRect(
+                                            BorderRadius.all(
+                                                Radius.circular(10.0)))),
+                                    child: Container(
+                                        height: 94.5,
+                                        width: 92.71,
+                                        child: (images.length != 0 &&
+                                                images[index] != null)
+                                            ?
+                                            // ? FadeInImage(
+                                            //     fit: BoxFit.fill,
+                                            //     image: CachedNetworkImageProvider(
+                                            //       images[index],
+                                            //       //scale: 1,
+                                            //     ),
+                                            //     placeholder:
+                                            //         CachedNetworkImageProvider(
+                                            //       "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+                                            //     ))
+
+                                            CachedNetworkImage(
+                                                imageUrl: images[index]
+                                                        .startsWith("https://")
+                                                    ? images[index]
+                                                    : "https://firebasestorage.googleapis.com/v0/b/growlah-bcb3f.appspot.com/o/News%2FloadingGif.gif?alt=media&token=eb1cea40-8a88-4d4d-892f-a010e7554417",
+                                                fit: BoxFit.fill,
+                                                placeholder: (context, url) {
+                                                  return RefreshProgressIndicator(
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation<
+                                                                Color>(
+                                                            Colors.green),
+                                                  );
+                                                },
+                                              )
+
+                                            // ? Image.network(
+                                            //     images[index],
+                                            //     fit: BoxFit.fill,
+                                            //   )
+                                            : Icon(Icons.error))),
                               ),
-                              Text(
-                                feedsList[index].date,
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.grey),
-                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Container(
+                                    width: SizeConfig.screenWidth -
+                                        16 -
+                                        92.71 -
+                                        48,
+                                    padding: const EdgeInsets.only(
+                                        top: 32.0, bottom: 11.0, right: 0),
+                                    child: Text(
+                                      feedsList[index].title,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 3,
+                                      style: TextStyle(
+                                          fontFamily: AppConfig.roboto,
+                                          color: Colors.green),
+                                    ),
+                                  ),
+                                  Text(
+                                    feedsList[index].date,
+                                    style: TextStyle(
+                                        fontFamily: AppConfig.roboto,
+                                        color: Colors.grey),
+                                  ),
+                                ],
+                              )
                             ],
-                          )
-                        ],
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        },
-      ),
-    );
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+          Container(
+              padding:
+                  EdgeInsets.only(top: SizeConfig.screenHeight - 200, left: 20),
+              child: FloatingActionButton(
+                onPressed: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CreatePost())),
+                child: Icon(Icons.add, color: Colors.white),
+              ))
+        ]));
   }
 
   Widget getBottomView(FeedsModel feedsList) {
