@@ -16,8 +16,17 @@ import 'my_garden.dart';
 import 'dart:math';
 import 'package:clippy_flutter/arc.dart';
 import 'package:grow_lah/model/extractImage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 //https://www.google.com/url?sa=i&url=https%3A%2F%2Ftwitter.com%2Fdribbble%2Fstatus%2F1030427833548648449&psig=AOvVaw1uWt8AZxzOW2_MEY4ZrrcY&ust=1608714478583000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCMiktsqe4e0CFQAAAAAdAAAAABA3
+
+class Notification {
+  String title;
+  String description;
+  String system;
+  Notification(this.title, this.description, this.system);
+}
 
 class GardenMonitor extends StatefulWidget {
   GardenMonitor({Key key, @required this.garden}) : super(key: key);
@@ -63,6 +72,28 @@ class _GardenMonitorState extends State<GardenMonitor>
   List<double> phData = [7.0];
   List<double> tempData = [27.0];
   List<double> humidityData = [65.0];
+  List<Notification> notifications = [];
+
+  Future getNotifications() async {
+    await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      print('value is');
+      print(value);
+      print(value['notifs']);
+      List<Notification> data = [];
+      for (var notif in value['notifs']) {
+        data.add(Notification(
+            notif['title'], notif['description'], notif['system']));
+      }
+      print(data);
+      setState(() {
+        notifications = data;
+      });
+    });
+  }
 
   Future getSensorData() async {
     print("started");
@@ -243,6 +274,7 @@ class _GardenMonitorState extends State<GardenMonitor>
     _progressController.forward();
     super.initState();
     getSensorData();
+    getNotifications();
   }
 
   @override
@@ -572,54 +604,31 @@ class _GardenMonitorState extends State<GardenMonitor>
   Widget activity() {
     return Container(
         width: SizeConfig.screenWidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            activityCard("URGENT!", "The pot need cleaning!"),
-            activityCard("22 December 2020", "Nutrients and Water Refilled"),
-            activityCard(
-                "21 December 2020", "Water dropped below optimal level!"),
-            activityCard(
-                "5 December 2020", "Tomatos and Lettuce seeds planted"),
-            SizedBox(
-              height: 100,
-            )
-          ],
+        // child: Column(
+        //   crossAxisAlignment: CrossAxisAlignment.center,
+        //   mainAxisAlignment: MainAxisAlignment.center,
+        //   children: [
+        //     // activityCard("URGENT!", "The pot need cleaning!"),
+        //     // activityCard("22 December 2020", "Nutrients and Water Refilled"),
+        //     // activityCard(
+        //     //     "21 December 2020", "Water dropped below optimal level!"),
+        //     // activityCard(
+        //     //     "5 December 2020", "Tomatos and Lettuce seeds planted"),
+        //     SizedBox(
+        //       height: 100,
+        //     )
+        //   ],
+        // )
+        child: ListView.builder(
+          physics: ScrollPhysics(parent: ScrollPhysics()),
+          scrollDirection: Axis.vertical,
+          itemCount: notifications.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            return activityCard(
+                notifications[index].title, notifications[index].description);
+          },
         ));
-  }
-
-  Widget activityCard(String title, String description) {
-    return Container(
-      padding: EdgeInsets.all(10),
-      width: SizeConfig.screenWidth - 20,
-      child: Neumorphic(
-        style:
-            AppConfig.neuStyle.copyWith(shadowLightColor: Colors.transparent),
-        child: Column(
-          children: [
-            Container(
-              width: SizeConfig.screenWidth - 20,
-              padding: EdgeInsets.all(10),
-              child: Text(
-                title,
-                style: TextStyle(fontSize: 24, color: Colors.green),
-                textAlign: TextAlign.start,
-              ),
-            ),
-            Container(
-              width: SizeConfig.screenWidth - 20,
-              padding: EdgeInsets.all(10),
-              child: Text(
-                description,
-                style: TextStyle(fontSize: 18, color: Colors.green),
-                textAlign: TextAlign.start,
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 
   List<Widget> getLabelText(List<String> labels) {
@@ -755,4 +764,38 @@ class CurvedPainter extends CustomPainter {
   bool shouldRepaint(CustomPainter oldDelegate) {
     return true;
   }
+}
+
+Widget activityCard(String title, String description,
+    {color1 = Colors.white, color2 = Colors.green}) {
+  return Container(
+    padding: EdgeInsets.all(10),
+    width: SizeConfig.screenWidth - 20,
+    child: Neumorphic(
+      style: AppConfig.neuStyle
+          .copyWith(shadowLightColor: Colors.transparent, color: color1),
+      child: Column(
+        children: [
+          Container(
+            width: SizeConfig.screenWidth - 20,
+            padding: EdgeInsets.all(10),
+            child: Text(
+              title,
+              style: TextStyle(fontSize: 24, color: color2),
+              textAlign: TextAlign.start,
+            ),
+          ),
+          Container(
+            width: SizeConfig.screenWidth - 20,
+            padding: EdgeInsets.all(10),
+            child: Text(
+              description,
+              style: TextStyle(fontSize: 18, color: color2),
+              textAlign: TextAlign.start,
+            ),
+          )
+        ],
+      ),
+    ),
+  );
 }

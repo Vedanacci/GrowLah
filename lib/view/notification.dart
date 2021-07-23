@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:grow_lah/view/garden_monitor.dart' as not;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NotificationScreen extends StatefulWidget {
   NotificationScreen({Key key}) : super(key: key);
@@ -14,9 +17,40 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class _NotificationScreenState extends State<NotificationScreen> {
+  List<not.Notification> notifications = [];
   @override
   void initState() {
     super.initState();
+    getNotifications();
+  }
+
+  Future getNotifications() async {
+    await FirebaseFirestore.instance
+        .collection("Users")
+        .doc(FirebaseAuth.instance.currentUser.uid)
+        .get()
+        .then((value) {
+      print('value is');
+      print(value);
+      print(value['notifs']);
+      List<not.Notification> data = [];
+      for (var notif in value['notifs']) {
+        data.add(not.Notification(
+            notif['title'], notif['description'], notif['system']));
+        data.add(not.Notification(
+            notif['title'], notif['description'], notif['system']));
+        data.add(not.Notification(
+            notif['title'], notif['description'], notif['system']));
+        data.add(not.Notification(
+            notif['title'], notif['description'], notif['system']));
+        data.add(not.Notification(
+            notif['title'], notif['description'], notif['system']));
+      }
+      print(data);
+      setState(() {
+        notifications = data;
+      });
+    });
   }
 
   @override
@@ -27,82 +61,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppConfig.appBar(CommonStrings.notifications, context, false),
-      body: ListView.builder(
-          shrinkWrap: true,
-          itemCount: 2,
-          physics: ScrollPhysics(parent: ScrollPhysics()),
-          scrollDirection: Axis.vertical,
-          itemBuilder: (context, position) {
-            return Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Neumorphic(
-                style:
-                    AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
-                child: Container(
-                  height: 121.0,
-                  width: 374.0,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Column(
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            children: <Widget>[
-                              Icon(
-                                Icons.error_outline,
-                                color: Colors.red,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 10.0),
-                                  child: Text(
-                                    CommonStrings.alert,
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
-                                      fontFamily: AppConfig.roboto,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              Text(
-                                'x',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontFamily: AppConfig.roboto,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Flexible(
-                              child: Text(
-                                'There is a disturbing weather condition..Please '
-                                ' ensure your Field is met with all precautional'
-                                'requirements.',
-                                overflow: TextOverflow.clip,
-                                maxLines: null,
-                                style: TextStyle(
-                                    fontFamily: AppConfig.roboto,
-                                    color: Colors.green,
-                                    fontSize: 12.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          }),
-    );
+        appBar: AppConfig.appBar(CommonStrings.notifications, context, false),
+        body: ListView.builder(
+            physics: ScrollPhysics(parent: ScrollPhysics()),
+            scrollDirection: Axis.vertical,
+            itemCount: notifications.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              return not.activityCard(
+                  notifications[index].title, notifications[index].description,
+                  color1: Colors.green, color2: Colors.white);
+            }));
   }
 }

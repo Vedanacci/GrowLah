@@ -38,7 +38,7 @@ class AppConfig {
   static NeumorphicBoxShape neuShape =
       NeumorphicBoxShape.roundRect(BorderRadius.all(Radius.circular(10.0)));
   static appBar(String title, BuildContext context, bool showNotification,
-      {bool showRefer = true,
+      {bool showRefer = false,
       Color color = Colors.green,
       double fontSize = 16}) {
     return AppBar(
