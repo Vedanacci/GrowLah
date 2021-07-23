@@ -9,6 +9,7 @@ import 'package:grow_lah/model/profile_model.dart';
 import 'package:grow_lah/utils/app_config.dart';
 import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
+import 'package:grow_lah/view/authentication.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -234,49 +235,47 @@ class _MyProfileState extends State<MyProfile> {
 
   Widget getList() {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: ListView.builder(
-          physics: ScrollPhysics(parent: ScrollPhysics()),
-          scrollDirection: Axis.vertical,
-          itemCount: myList.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Neumorphic(
-                style:
-                    AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
-                child: Container(
-                  height: 55.0,
-                  width: 374.0,
-                  color: Colors.white,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Text(
-                          myList[index],
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontFamily: AppConfig.roboto,
+        padding: const EdgeInsets.all(10.0),
+        // child: ListView.builder(
+        //     physics: ScrollPhysics(parent: ScrollPhysics()),
+        //     scrollDirection: Axis.vertical,
+        //     itemCount: myList.length,
+        //     shrinkWrap: true,
+        //     itemBuilder: (context, index) {
+        child: TextButton(
+            onPressed: () {
+              print("Signing out");
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => AuthenticationScreen()));
+              FirebaseAuth.instance.signOut();
+            },
+            child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Neumorphic(
+                  style:
+                      AppConfig.neuStyle.copyWith(boxShape: AppConfig.neuShape),
+                  child: Container(
+                    height: 55.0,
+                    width: 374.0,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            myList[4],
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontFamily: AppConfig.roboto,
+                            ),
                           ),
-                        ),
-                        index == 0
-                            ? Icon(
-                                Icons.keyboard_arrow_down,
-                                color: Colors.green,
-                              )
-                            : index == 1
-                                ? Image.asset(Assets.checkedIcon)
-                                : Container()
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ),
-            );
-          }),
-    );
+                ))));
   }
 }

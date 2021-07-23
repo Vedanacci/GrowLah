@@ -96,8 +96,8 @@ class _AppDrawerState extends State<AppDrawer> {
                         case 6:
                           moveToNext(route0);
                           break;
-                        case 1:
-                          moveToNext(route1);
+                        case 0:
+                          moveToNext(route0);
                           break;
                         case 2:
                           moveToNext(route2);
@@ -111,7 +111,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         case 5:
                           moveToNext(route5);
                           break;
-                        case 0:
+                        case 1:
                           {
                             print("Signing out");
                             Navigator.pushReplacement(

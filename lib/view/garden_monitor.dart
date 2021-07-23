@@ -82,12 +82,19 @@ class _GardenMonitorState extends State<GardenMonitor>
         print("In light");
         print(snapshot.value);
         var val = snapshot.value;
-        val = (val * 10000 / 4095.0).round() / 100;
-        print("Val: $val");
-        if (val != lightData[0]) {
-          print("Mounted");
+        if (val != null) {
+          val = (val * 10000 / 4095.0).round() / 100;
+          print("Val: $val");
+          if (val != lightData[0]) {
+            print("Mounted");
+            setState(() {
+              lightData = [val];
+              animate(1);
+            });
+          }
+        } else {
           setState(() {
-            lightData = [val];
+            lightData = [null];
             animate(1);
           });
         }
@@ -493,7 +500,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "PH Measurements : ${(phData == null) ? 'Error' : phData[0]}",
+            "PH Measurements : ${(phData[0] == null) ? 'Error' : phData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -503,7 +510,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(_progress.value, 0, 14,
-            (phData == null) ? 0 : phData[0].toDouble()),
+            (phData[0] == null) ? 0 : phData[0].toDouble()),
         SizedBox(
           height: 50,
         ),
@@ -511,7 +518,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "Light Ambience (%) : ${(lightData == null) ? 'Error' : lightData[0]}",
+            "Light Ambience (%) : ${(lightData[0] == null) ? 'Error' : lightData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -521,7 +528,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(
-            _progress.value, 0, 100, (lightData == null) ? 0 : lightData[0]),
+            _progress.value, 0, 100, (lightData[0] == null) ? 0 : lightData[0]),
         SizedBox(
           height: 50,
         ),
@@ -529,7 +536,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "Temperature (˚C) : ${(tempData == null) ? 'Error' : tempData[0]}",
+            "Temperature (˚C) : ${(tempData[0] == null) ? 'Error' : tempData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -539,7 +546,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(_progress.value, 0, 50,
-            (tempData == null) ? 0 : tempData[0].toDouble()),
+            (tempData[0] == null) ? 0 : tempData[0].toDouble()),
         SizedBox(
           height: 50,
         ),
@@ -547,7 +554,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           width: SizeConfig.screenWidth,
           padding: EdgeInsets.only(left: 20, bottom: 20),
           child: Text(
-            "Humidity (%) : ${(humidityData == null) ? 'Error' : humidityData[0]}",
+            "Humidity (%) : ${(humidityData[0] == null) ? 'Error' : humidityData[0]}",
             textAlign: TextAlign.start,
             style: GoogleFonts.varelaRound(
               color: Colors.white,
@@ -557,7 +564,7 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(_progress.value, 0, 100,
-            (humidityData == null) ? 0 : humidityData[0])
+            (humidityData[0] == null) ? 0 : humidityData[0])
       ],
     );
   }
