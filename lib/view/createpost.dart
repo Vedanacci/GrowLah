@@ -16,6 +16,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:grow_lah/model/user_model.dart';
 import 'package:grow_lah/model/extractImage.dart';
+import 'package:intl/intl.dart';
 
 class CreatePost extends StatefulWidget {
   CreatePost();
@@ -76,7 +77,32 @@ class _CreatePostState extends State<CreatePost> {
   UserModel user = UserModel("id", "name", "email", "phoneNumber");
 
   void uploadPost() async {
-    print(post);
+    post.authorName = user.name;
+    post.profileImage = "${user.id}.jpg";
+    var now = DateTime.now();
+    print(now);
+    print(DateFormat('E, d MMM, yyyy').format(now));
+    post.date = DateFormat('E, d MMM, yyyy')
+        .format(now); //"${now.weekday} ${now.day}, ${now.month} ${now.year}";
+    print(post.toJson());
+    print(user.name);
+    await FirebaseFirestore.instance
+        .collection("NewsFeed")
+        .add(post.toJson())
+        .then((value) async {
+      print("Post Added");
+      print(value.id);
+      var image2 = File(imageFile.path);
+      var imageRef =
+          FirebaseStorage.instance.ref().child("News/${value.id}.jpg");
+      imageRef.putFile(image2);
+      await FirebaseFirestore.instance
+          .collection("NewsFeed")
+          .doc(value.id)
+          .update({'Image': "${value.id}.jpg"})
+          .then((value) => print("Post Updated"))
+          .catchError((error) => print("Failed to update Post: $error"));
+    }).catchError((error) => print("Failed to add Post: $error"));
   }
 
   @override
@@ -176,9 +202,11 @@ class _CreatePostState extends State<CreatePost> {
                           style: AppConfig.neuStyle.copyWith(
                               boxShape: NeumorphicBoxShape.roundRect(
                                   BorderRadius.all(Radius.circular(10)))),
-                          child: imagePath != null
-                              ? cachedImage(imagePath)
-                              : Image.asset(Assets.manIcon),
+                          child: imageFile != null
+                              ? Image.file(File(imageFile.path))
+                              : imagePath != null
+                                  ? cachedImage(imagePath)
+                                  : Image.asset(Assets.manIcon),
                         ),
                       ),
                       SizedBox(
@@ -188,6 +216,7 @@ class _CreatePostState extends State<CreatePost> {
                           onTap: () {
                             if (_formKey.currentState.validate()) {
                               print('Valid');
+                              _formKey.currentState.save();
                               uploadPost();
                             }
                           },
@@ -269,20 +298,12 @@ class _CreatePostState extends State<CreatePost> {
         });
   }
 
-  void updateImage(PickedFile image) {
-    var image2 = File(image.path);
-    var imageRef = FirebaseStorage.instance.ref().child("Users/${user.id}.jpg");
-    imageRef.putFile(image2);
-    print("Uploaded profile photo");
-    loadImage();
-  }
-
   openCamera() async {
     var image = await ImagePicker().getImage(source: ImageSource.camera);
     this.setState(() {
       imageFile = image;
     });
-    updateImage(image);
+    // updateImage(image);
     //Navigator.pop(context);
   }
 
@@ -291,7 +312,7 @@ class _CreatePostState extends State<CreatePost> {
     this.setState(() {
       imageFile = picture;
     });
-    updateImage(picture);
+    // updateImage(picture);
     //Navigator.of(context).pop();
   }
 
@@ -301,12 +322,13 @@ class _CreatePostState extends State<CreatePost> {
         builder: (BuildContext context) {
           return Dialog(
             child: Container(
-              height: 300.0,
-              width: 200.0,
-              child: imagePath != null
-                  ? cachedImage(imagePath)
-                  : Image.asset(Assets.manIcon),
-            ),
+                height: 300.0,
+                width: 200.0,
+                child: imageFile != null
+                    ? Image.file(File(imageFile.path))
+                    : imagePath != null
+                        ? cachedImage(imagePath)
+                        : Image.asset(Assets.manIcon)),
           );
         });
   }

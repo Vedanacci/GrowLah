@@ -298,7 +298,7 @@ class _DetailCommunicationState extends State<DetailCommunication> {
       if (image != null) {
         if (type == 1) {
           Reference ref =
-              FirebaseStorage.instance.ref().child("Products").child(image);
+              FirebaseStorage.instance.ref().child("Users").child(image);
           String link = await ref.getDownloadURL();
           updatedImages.add(link);
         } else {
