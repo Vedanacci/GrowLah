@@ -7,7 +7,7 @@ class OptionsList {
     List<Options> options = [
       Options(1, CommonStrings.videoStory, Assets.videoIcon),
       Options(2, CommonStrings.monitor, Assets.tempIcon),
-      Options(3, "ACTIVITY", Assets.communicate),
+      Options(3, "NOTIFICAIONS", Assets.communicate),
       Options(4, "BUY", Assets.bigCart),
       Options(5, CommonStrings.newsFeed, Assets.newsFeed),
       Options(6, CommonStrings.scanSpot, Assets.scanSpot)

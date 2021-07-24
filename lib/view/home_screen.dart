@@ -410,11 +410,15 @@ class _HomeScreenState extends State<HomeScreen> {
     SizeConfig.screenHeight = size.height;
     SizeConfig.screenWidth = size.width;
     User user = FirebaseAuth.instance.currentUser;
-    List<Options> updatedList = (user != null)
-        ? optionsList.sublist(0, 2) + optionsList.sublist(4)
-        : [optionsList[0]] +
-            optionsList.sublist(
-                3); //((type != 2) ? optionsList : [optionsList[1]] + [optionsList[5]])
+    List indexes = (user != null) ? [0, 1, 4, 5, 3, 2] : [0, 3, 4, 5];
+    List<Options> updatedList = [];
+    for (var i in indexes) {
+      updatedList.add(optionsList[i]);
+    }
+    // // ? [0, 1, 4]
+    // : [optionsList[0]] +
+    //     optionsList.sublist(
+    //         3); //((type != 2) ? optionsList : [optionsList[1]] + [optionsList[5]])
     return Container(
       child: GridView.builder(
           scrollDirection: Axis.vertical,
@@ -429,9 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 print("tapped");
                 print(index);
                 print(index + 2 * (index / 2).floor());
-                user == null
-                    ? itemSelected((index == 0) ? index : index + 2)
-                    : itemSelected(index + 2 * (index / 2).floor());
+                itemSelected(indexes[index]);
                 // : (type != 2)
                 //     ? itemSelected(index)
                 //     : itemSelected(index + 1 + 3 * (index));
@@ -509,8 +511,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ;
         break;
       case 2:
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => MyOrders()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => NotificationScreen()));
         break;
       case 3:
         Navigator.push(

@@ -99,9 +99,25 @@ class _CreatePostState extends State<CreatePost> {
       await FirebaseFirestore.instance
           .collection("NewsFeed")
           .doc(value.id)
-          .update({'Image': "${value.id}.jpg"})
-          .then((value) => print("Post Updated"))
-          .catchError((error) => print("Failed to update Post: $error"));
+          .update({'Image': "${value.id}.jpg"}).then((value) async {
+        print("Post Updated");
+        await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text("Success"),
+              content: const Text("You have successfully uploaded a post!"),
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(true);
+                    },
+                    child: const Text("Done")),
+              ],
+            );
+          },
+        );
+      }).catchError((error) => print("Failed to update Post: $error"));
     }).catchError((error) => print("Failed to add Post: $error"));
   }
 

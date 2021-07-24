@@ -37,14 +37,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
       for (var notif in value['notifs']) {
         data.add(not.Notification(
             notif['title'], notif['description'], notif['system']));
-        data.add(not.Notification(
-            notif['title'], notif['description'], notif['system']));
-        data.add(not.Notification(
-            notif['title'], notif['description'], notif['system']));
-        data.add(not.Notification(
-            notif['title'], notif['description'], notif['system']));
-        data.add(not.Notification(
-            notif['title'], notif['description'], notif['system']));
       }
       print(data);
       setState(() {
