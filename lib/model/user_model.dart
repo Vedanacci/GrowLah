@@ -12,8 +12,10 @@ class UserModel {
   String email;
   String phoneNumber;
   List cart;
+  List notifs;
 
-  UserModel(this.id, this.name, this.email, this.phoneNumber, {this.cart});
+  UserModel(this.id, this.name, this.email, this.phoneNumber,
+      {this.cart, this.notifs});
 
   static Future<UserModel> getUser() async {
     String currentUID = FirebaseAuth.instance.currentUser.uid;
@@ -35,6 +37,7 @@ class UserModel {
         'email': email,
         'phoneNumber': phoneNumber,
         'Cart': cart,
+        'notifs': notifs,
       };
 
   createProfilePhoto() async {

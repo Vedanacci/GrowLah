@@ -276,6 +276,7 @@ class _ArticleState extends State<Article> {
                         ? feedsList.likes += 1
                         : feedsList.likes -= 1;
                   });
+                  updateLikes();
                 },
                 child: getLikeIcon(feedsList.isLiked ?? false)),
             Text(
@@ -384,6 +385,28 @@ class _ArticleState extends State<Article> {
         .collection("NewsFeed")
         .doc(widget.feedsModel.id)
         .update({'Comments': updatedComments});
+  }
+
+  void updateLikes() async {
+    if (widget.feedsModel.isLiked) {
+      await FirebaseFirestore.instance
+          .collection("NewsFeed")
+          .doc(widget.feedsModel.id)
+          .update({
+        'Likes': widget.feedsModel.likes,
+        'likedBy':
+            FieldValue.arrayUnion([FirebaseAuth.instance.currentUser.uid])
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection("NewsFeed")
+          .doc(widget.feedsModel.id)
+          .update({
+        'Likes': widget.feedsModel.likes,
+        'likedBy':
+            FieldValue.arrayRemove([FirebaseAuth.instance.currentUser.uid])
+      });
+    }
   }
 
   Widget getLikeIcon(bool isLiked) {

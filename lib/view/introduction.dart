@@ -175,9 +175,14 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.only(left: 0, right: 0),
+                    padding: EdgeInsets.only(left: 10, right: 10),
                     child: Text(
-                        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et rhoncus sed amet nibh curabitur amet at purus. Vel commodo a.",
+                        index == 1
+                            ? "GrowLah delivers everything you need right at your doorstep: incredible hydroponic systems, cutting edge IOT enabled system monitoring, and unmatched ease of use."
+                            : index == 2
+                                ? "Our use of cutting edge IOT enabled technologies allow users to remotely track their systems and be immediately notified if any problems arise."
+                                : "Our marketplace brings nature straight to your door. Not only do we have the products you need, but we provide a different experience to a pure seller, with a thriving community and a variety of other incredible features.",
+                        textAlign: TextAlign.justify,
                         style: TextStyle(
                             fontSize: 18.0,
                             fontFamily: AppConfig.roboto,

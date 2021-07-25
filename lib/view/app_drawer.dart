@@ -135,7 +135,7 @@ class _AppDrawerState extends State<AppDrawer> {
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 (FirebaseAuth.instance.currentUser == null &&
-                                        index == 6)
+                                        index == 1)
                                     ? "Log In"
                                     : drawerList[index].title,
                                 style: TextStyle(
@@ -161,7 +161,7 @@ class _AppDrawerState extends State<AppDrawer> {
       case 0:
         return Assets.profileIcon;
         break;
-      case 1:
+      case 6:
         return Assets.donateIcon;
         break;
       case 2:
@@ -176,7 +176,7 @@ class _AppDrawerState extends State<AppDrawer> {
       case 5:
         return Assets.stockGreen;
         break;
-      case 6:
+      case 1:
         return Assets.logOut;
         break;
     }
