@@ -448,65 +448,6 @@ class _DetailCommunicationState extends State<DetailCommunication> {
         ]));
   }
 
-  Widget getBottomView(FeedsModel feedsList) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20.0, top: 10.0, bottom: 10.0),
-      child: Container(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            GestureDetector(
-                onTap: () {
-                  setState(() {
-                    feedsList.isLiked
-                        ? feedsList.isLiked = false
-                        : feedsList.isLiked = true;
-                    feedsList.isLiked
-                        ? feedsList.likes += 1
-                        : feedsList.likes -= 1;
-                  });
-                },
-                child: getLikeIcon(feedsList.isLiked ?? false)),
-            Text(
-              feedsList.likes.toString() + CommonStrings.likes,
-              style: TextStyle(
-                fontFamily: AppConfig.roboto,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 8.0),
-              child: Image.asset(
-                Assets.comment,
-                height: 20.0,
-                width: 20.0,
-              ),
-            ),
-            Text(
-              feedsList.comments.length.toString() + CommonStrings.comments,
-              style: TextStyle(
-                fontFamily: AppConfig.roboto,
-              ),
-            ),
-            // Padding(
-            //   padding: const EdgeInsets.only(left:8.0),
-            //   child: Image.asset(Assets.favBlack,height: 20.0,width: 20.0,),
-            // ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getLikeIcon(bool isLiked) {
-    return isLiked
-        ? Image.asset(
-            Assets.favRed,
-            height: 20.0,
-            width: 20.0,
-          )
-        : Image.asset(Assets.favBlack, height: 20.0, width: 20.0);
-  }
-
   downloadFeed() async {
     List<FeedsModel> downloadList = [];
     List newImages = [];
