@@ -99,8 +99,8 @@ class _AppDrawerState extends State<AppDrawer> {
                         case 0:
                           moveToNext(route0);
                           break;
-                        case 2:
-                          moveToNext(route2);
+                        case 1:
+                          moveToNext(route1);
                           break;
                         case 3:
                           moveToNext(route3);
@@ -111,7 +111,7 @@ class _AppDrawerState extends State<AppDrawer> {
                         case 5:
                           moveToNext(route5);
                           break;
-                        case 1:
+                        case 2:
                           {
                             print("Signing out");
                             Navigator.pushReplacement(
@@ -161,10 +161,10 @@ class _AppDrawerState extends State<AppDrawer> {
       case 0:
         return Assets.profileIcon;
         break;
-      case 6:
+      case 1:
         return Assets.donateIcon;
         break;
-      case 2:
+      case 3:
         return Assets.settingsIcon;
         break;
       case 3:
@@ -176,7 +176,7 @@ class _AppDrawerState extends State<AppDrawer> {
       case 5:
         return Assets.stockGreen;
         break;
-      case 1:
+      case 2:
         return Assets.logOut;
         break;
     }

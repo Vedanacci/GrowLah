@@ -161,21 +161,25 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             actions: <Widget>[
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => ReferAndEarn()));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  child: Image.asset(
-                    Assets.stock,
-                    color: Colors.white,
-                    height: 15.0,
-                    width: 15.0,
-                  ),
-                ),
-              ),
+              (FirebaseAuth.instance.currentUser == null)
+                  ? Container()
+                  : GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ReferAndEarn()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: Image.asset(
+                          Assets.stock,
+                          color: Colors.white,
+                          height: 15.0,
+                          width: 15.0,
+                        ),
+                      ),
+                    ),
               InkWell(
                 onTap: () {
                   Navigator.push(

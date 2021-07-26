@@ -34,9 +34,11 @@ class _MyProfileState extends State<MyProfile> {
   PickedFile imageFile;
   List<dynamic> myList = List();
   UserModel user = UserModel("id", "name", "email", "phoneNumber");
+  TextEditingController _controller;
 
   @override
   void initState() {
+    _controller = TextEditingController();
     myList = ProfileModel.profileList();
     downloadUser();
     super.initState();
@@ -98,24 +100,52 @@ class _MyProfileState extends State<MyProfile> {
                 ),
               ),
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  user.name,
-                  style: TextStyle(
+            GestureDetector(
+                onTap: () async {
+                  await showDialog<void>(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                            title: const Text('Edit Name'),
+                            actions: [
+                              TextField(
+                                controller: _controller,
+                              ),
+                              Row(children: [
+                                FlatButton(
+                                  onPressed: () {
+                                    changeName();
+                                    Navigator.of(context).pop(false);
+                                  },
+                                  child: const Text("DONE"),
+                                ),
+                                FlatButton(
+                                  onPressed: () =>
+                                      Navigator.of(context).pop(false),
+                                  child: const Text("CANCEL"),
+                                ),
+                              ])
+                            ]);
+                      });
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      user.name,
+                      style: TextStyle(
+                          color: Colors.green,
+                          fontFamily: AppConfig.roboto,
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    Icon(
+                      Icons.edit,
                       color: Colors.green,
-                      fontFamily: AppConfig.roboto,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold),
-                ),
-                Icon(
-                  Icons.edit,
-                  color: Colors.green,
-                  size: 18.0,
-                )
-              ],
-            ),
+                      size: 18.0,
+                    )
+                  ],
+                )),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Neumorphic(
@@ -140,6 +170,20 @@ class _MyProfileState extends State<MyProfile> {
         ),
       ),
     );
+  }
+
+  void changeName() {
+    if (_controller.value.text != '') {
+      FirebaseFirestore.instance
+          .collection('Users')
+          .doc(user.id)
+          .update({'name': _controller.value.text});
+      setState(() {
+        user.name = _controller.value.text;
+      });
+    } else {
+      AppConfig.showToast("Please enter some text");
+    }
   }
 
   void changeImage() {

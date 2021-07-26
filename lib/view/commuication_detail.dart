@@ -437,14 +437,16 @@ class _DetailCommunicationState extends State<DetailCommunication> {
                     ),
                   ),
           ])),
-          Container(
-              padding:
-                  EdgeInsets.only(top: SizeConfig.screenHeight - 200, left: 20),
-              child: FloatingActionButton(
-                onPressed: () => Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => CreatePost())),
-                child: Icon(Icons.add, color: Colors.white),
-              ))
+          FirebaseAuth.instance.currentUser == null
+              ? Container()
+              : Container(
+                  padding: EdgeInsets.only(
+                      top: SizeConfig.screenHeight - 200, left: 20),
+                  child: FloatingActionButton(
+                    onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => CreatePost())),
+                    child: Icon(Icons.add, color: Colors.white),
+                  ))
         ]));
   }
 

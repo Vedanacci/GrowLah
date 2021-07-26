@@ -13,6 +13,7 @@ import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/utils/feeds_utils.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:grow_lah/view/authentication.dart';
 
 class Article extends StatefulWidget {
   FeedsModel feedsModel;
@@ -201,36 +202,12 @@ class _ArticleState extends State<Article> {
               ),
               getBottomView(widget.feedsModel),
               comments(),
-              Form(
-                  key: _formKey,
-                  child: Column(children: [
-                    Padding(
-                        padding: const EdgeInsets.only(
-                            left: 10.0, right: 10.0, bottom: 10, top: 10),
-                        child: TextFormField(
-                            onSaved: (String value) {
-                              comment = value;
-                            },
-                            keyboardType: TextInputType.multiline,
-                            maxLines: null,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Enter your Comment',
-                            ),
-                            validator: (String value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter some text';
-                              }
-                              return null;
-                            })),
-                    GestureDetector(
-                      onTap: () {
-                        if (_formKey.currentState.validate()) {
-                          print('Valid');
-                          _formKey.currentState.save();
-                          uploadComment();
-                        }
-                      },
+              FirebaseAuth.instance.currentUser == null
+                  ? GestureDetector(
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => AuthenticationScreen())),
                       child: Padding(
                         padding: const EdgeInsets.only(
                             left: 10.0, right: 10.0, bottom: 30, top: 10),
@@ -242,7 +219,7 @@ class _ArticleState extends State<Article> {
                             width: SizeConfig.screenWidth - 20,
                             padding: EdgeInsets.all(20),
                             child: Text(
-                              'Comment!',
+                              'Sign Up to Comment!',
                               style: TextStyle(
                                   // fontSize: 11,
                                   color: Colors.white,
@@ -251,9 +228,60 @@ class _ArticleState extends State<Article> {
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ]))
+                      ))
+                  : Form(
+                      key: _formKey,
+                      child: Column(children: [
+                        Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 10, top: 10),
+                            child: TextFormField(
+                                onSaved: (String value) {
+                                  comment = value;
+                                },
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  hintText: 'Enter your Comment',
+                                ),
+                                validator: (String value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                })),
+                        GestureDetector(
+                          onTap: () {
+                            if (_formKey.currentState.validate()) {
+                              print('Valid');
+                              _formKey.currentState.save();
+                              uploadComment();
+                            }
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10.0, right: 10.0, bottom: 30, top: 10),
+                            child: Neumorphic(
+                              style: AppConfig.neuStyle.copyWith(
+                                  shadowLightColor: Colors.transparent,
+                                  color: Colors.green),
+                              child: Container(
+                                width: SizeConfig.screenWidth - 20,
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  'Comment!',
+                                  style: TextStyle(
+                                      // fontSize: 11,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ]))
             ],
           )),
         ));
