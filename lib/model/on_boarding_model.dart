@@ -13,6 +13,8 @@ class OnBoardingList {
       OnBoardingModel(0, "Primary Learning Insitute"), //CommonStrings.gardening
       OnBoardingModel(1, "Secondary Learning Insitute"),
       OnBoardingModel(2, "Tertiary Learning Insitute"),
+      OnBoardingModel(3, "Coorporate"),
+      OnBoardingModel(3, "Consumer"),
     ];
     return onBoards;
   }

@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             actions: <Widget>[
-              (FirebaseAuth.instance.currentUser == null)
+              (true) //FirebaseAuth.instance.currentUser == nullFirebaseAuth.instance.currentUser == null
                   ? Container()
                   : GestureDetector(
                       onTap: () {

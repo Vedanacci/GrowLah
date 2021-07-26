@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:grow_lah/view/home_screen.dart';
 import 'package:grow_lah/view/introduction.dart';
 
 import 'on_boarding.dart';
@@ -229,11 +230,33 @@ class _AskReferState extends State<AskRefer> {
                                     fontWeight: FontWeight.bold),
                               )),
                               onTap: () {
-                                Navigator.push(
+                                if (valid == 2) {
+                                  FirebaseFirestore.instance
+                                      .collection('Users')
+                                      .where("phoneNumber",
+                                          isEqualTo: referController.text)
+                                      .get()
+                                      .then((value) {
+                                    var doc = value.docs.first;
+                                    FirebaseFirestore.instance
+                                        .collection('Users')
+                                        .doc(doc['id'])
+                                        .update({
+                                      'points': FieldValue.increment(20)
+                                    });
+                                  });
+                                  // } else {
+                                  //   Navigator.push(
+                                  //       context,
+                                  //       MaterialPageRoute(
+                                  //           builder: (context) =>
+                                  //               IntroductionScreen()));
+                                  // }
+                                }
+                                Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            IntroductionScreen()));
+                                        builder: (context) => HomeScreen()));
                               },
                             ),
                           ),

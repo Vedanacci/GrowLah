@@ -7,6 +7,7 @@ import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/view/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:grow_lah/view/refer_earn.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   OnBoardingScreen({Key key}) : super(key: key);
@@ -122,10 +123,10 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                                 .collection("Users")
                                 .doc(user)
                                 .update({'type': 2}); //selectedIndex
-                            Navigator.pushReplacement(
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => HomeScreen()));
+                                    builder: (context) => ReferAndEarn()));
                           },
                           child: Padding(
                             padding:

@@ -135,7 +135,7 @@ class _AppDrawerState extends State<AppDrawer> {
                               padding: const EdgeInsets.all(10.0),
                               child: Text(
                                 (FirebaseAuth.instance.currentUser == null &&
-                                        index == 1)
+                                        index == 2)
                                     ? "Log In"
                                     : drawerList[index].title,
                                 style: TextStyle(
