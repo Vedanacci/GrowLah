@@ -251,8 +251,9 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                     .passwordController.text
                                     .trim();
                                 if (password.length > 6) {
-                                  if (email.contains("@") &&
-                                      email.endsWith(".com")) {
+                                  if (RegExp(
+                                          r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                      .hasMatch(email)) {
                                     firebaseAuth
                                         .fetchSignInMethodsForEmail(email)
                                         .catchError((error) {
