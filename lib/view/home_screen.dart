@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             actions: <Widget>[
-              (true) //FirebaseAuth.instance.currentUser == nullFirebaseAuth.instance.currentUser == null
+              (true) //FirebaseAuth.instance.currentUser == null
                   ? Container()
                   : GestureDetector(
                       onTap: () {
@@ -180,23 +180,25 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
-              InkWell(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => NotificationScreen()));
-                },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0, right: 20.0),
-                  child: Image.asset(
-                    Assets.notification,
-                    color: Colors.white,
-                    height: 18.0,
-                    width: 18.0,
-                  ),
-                ),
-              )
+              FirebaseAuth.instance.currentUser != null
+                  ? InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NotificationScreen()));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 20.0),
+                        child: Image.asset(
+                          Assets.notification,
+                          color: Colors.white,
+                          height: 18.0,
+                          width: 18.0,
+                        ),
+                      ),
+                    )
+                  : Container()
             ],
             centerTitle: true,
             backgroundColor: Colors.transparent,
@@ -232,35 +234,35 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   ),
                   // ),
                   mainView(),
-                  FirebaseAuth.instance.currentUser == null
-                      ? GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        AuthenticationScreen()));
-                          },
-                          child: Neumorphic(
-                            style: NeumorphicStyle(
-                              color: Colors.transparent,
-                              boxShape: AppConfig.neuShape,
-                            ),
-                            child: Container(
-                              alignment: Alignment.center,
-                              width: SizeConfig.screenWidth - 40,
-                              height: 110.0,
-                              color: Colors.green,
-                              child: Text(
-                                  "Sign Up to Unlock full functionality",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontFamily: AppConfig.roboto,
-                                      fontSize: 18)),
-                            ),
-                          ))
-                      : Container(),
+                  // FirebaseAuth.instance.currentUser == null
+                  //     ? GestureDetector(
+                  //         onTap: () {
+                  //           Navigator.pushReplacement(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                   builder: (context) =>
+                  //                       AuthenticationScreen()));
+                  //         },
+                  //         child: Neumorphic(
+                  //           style: NeumorphicStyle(
+                  //             color: Colors.transparent,
+                  //             boxShape: AppConfig.neuShape,
+                  //           ),
+                  //           child: Container(
+                  //             alignment: Alignment.center,
+                  //             width: SizeConfig.screenWidth - 40,
+                  //             height: 110.0,
+                  //             color: Colors.green,
+                  //             child: Text(
+                  //                 "Sign Up to Unlock full functionality",
+                  //                 textAlign: TextAlign.center,
+                  //                 style: TextStyle(
+                  //                     color: Colors.white,
+                  //                     fontFamily: AppConfig.roboto,
+                  //                     fontSize: 18)),
+                  //           ),
+                  //         ))
+                  //     : Container(),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 8.0, top: 40),
                     child: GestureDetector(
@@ -494,11 +496,25 @@ class _HomeScreenState extends State<HomeScreen> {
         boxShape: AppConfig.neuShape,
       ),
       child: Container(
-        width: 75.0,
-        height: 55.0,
-        color: Colors.green,
-        child: Image.asset(Assets.chat),
-      ),
+          width: 150.0,
+          height: 55.0,
+          color: Colors.green,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'Contact Us',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontFamily: AppConfig.roboto,
+                ),
+              )
+            ],
+          )
+          // child: Image.asset(Assets.chat),
+          ),
     );
   }
 
