@@ -6,6 +6,7 @@ import 'package:grow_lah/utils/common_strings.dart';
 import 'package:grow_lah/view/garden_monitor.dart' as not;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
 
 class NotificationScreen extends StatefulWidget {
   NotificationScreen({Key key}) : super(key: key);
@@ -35,8 +36,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
       print(value['notifs']);
       List<not.Notification> data = [];
       for (var notif in value['notifs']) {
-        data.add(not.Notification(
-            notif['title'], notif['description'], notif['system']));
+        data.add(not.Notification(notif['title'], notif['description'],
+            notif['system'], notif['date']));
       }
       print(data);
       setState(() {
@@ -61,8 +62,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
             shrinkWrap: true,
             itemBuilder: (context, index) {
               return not.activityCard(
-                  notifications[index].title, notifications[index].description,
-                  color1: Colors.green, color2: Colors.white);
+                  notifications[index].title,
+                  notifications[index].description +
+                      '\n \nTime: ' +
+                      DateFormat("dd-MM-yyyy HH:mm:ss")
+                          .format(notifications[index].date.toDate()),
+                  color1: Colors.green,
+                  color2: Colors.white);
             }));
   }
 }

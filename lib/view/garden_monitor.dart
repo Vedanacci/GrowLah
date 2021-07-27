@@ -12,6 +12,7 @@ import 'package:grow_lah/utils/assets.dart';
 import 'package:grow_lah/utils/common_strings.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:grow_lah/view/product_list.dart';
+import 'package:intl/intl.dart';
 import 'my_garden.dart';
 import 'dart:math';
 import 'package:clippy_flutter/arc.dart';
@@ -25,7 +26,8 @@ class Notification {
   String title;
   String description;
   String system;
-  Notification(this.title, this.description, this.system);
+  Timestamp date;
+  Notification(this.title, this.description, this.system, this.date);
 }
 
 class GardenMonitor extends StatefulWidget {
@@ -85,8 +87,8 @@ class _GardenMonitorState extends State<GardenMonitor>
       print(value['notifs']);
       List<Notification> data = [];
       for (var notif in value['notifs']) {
-        data.add(Notification(
-            notif['title'], notif['description'], notif['system']));
+        data.add(Notification(notif['title'], notif['description'],
+            notif['system'], notif['date']));
       }
       print(data);
       setState(() {
@@ -598,7 +600,10 @@ class _GardenMonitorState extends State<GardenMonitor>
           ),
         ),
         curvedProgress(_progress.value, 0, 100,
-            (humidityData[0] == null) ? 0 : humidityData[0])
+            (humidityData[0] == null) ? 0 : humidityData[0]),
+        SizedBox(
+          height: 150,
+        ),
       ],
     );
   }
@@ -628,7 +633,12 @@ class _GardenMonitorState extends State<GardenMonitor>
           shrinkWrap: true,
           itemBuilder: (context, index) {
             return activityCard(
-                notifications[index].title, notifications[index].description);
+              notifications[index].title,
+              notifications[index].description +
+                  '\n \nTime: ' +
+                  DateFormat("dd-MM-yyyy HH:mm:ss")
+                      .format(notifications[index].date.toDate()),
+            );
           },
         ));
   }
