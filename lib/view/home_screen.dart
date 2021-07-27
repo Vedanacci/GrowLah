@@ -149,14 +149,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Stack(
       children: <Widget>[
         AppConfig.bgWave(context),
-        Center(
-            child: Container(
-                height: 100.0,
-                width: 100.0,
-                child: Image.asset(
-                  Assets.bigAppIcon,
-                  fit: BoxFit.fill,
-                ))),
+        // Center(
+        //     child: Container(
+        //         height: 100.0,
+        //         width: 100.0,
+        //         child: Image.asset(
+        //           Assets.bigAppIcon,
+        //           fit: BoxFit.fill,
+        //         ))),
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
